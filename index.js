@@ -121,7 +121,8 @@ function simpleMockServer(options) {
 }
 
 // EXAMPLE
-/*simpleMockServer({
+/*const smServer = require('simple-mock-server');
+smServer({
   port: 9933,
   routesPath: './paths',
   databasePath: 'db',
