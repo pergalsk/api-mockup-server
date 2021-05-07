@@ -1,0 +1,20 @@
+{
+  "name": "simple-mock-server",
+  "version": "0.1.0",
+  "description": "Simple API mock server",
+  "main": "index.js",
+  "scripts": {},
+  "author": "Peter Gál",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "chalk": "^4.1.1",
+    "cors": "^2.8.5",
+    "date-fns": "^2.21.1",
+    "express": "^4.17.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pergalsk/simple-mock-server.git"
+  }
+}
