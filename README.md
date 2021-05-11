@@ -1,4 +1,4 @@
-# Mock server APP
+# Simple mock server
 
 ## How to use
 
