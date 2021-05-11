@@ -1,7 +1,7 @@
 {
   "name": "simple-mock-server",
-  "version": "0.1.0",
-  "description": "Simple API mock server",
+  "version": "1.0.0",
+  "description": "Simple restAPI mocking server",
   "main": "index.js",
   "scripts": {},
   "author": "Peter Gál",
