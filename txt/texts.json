@@ -1,0 +1,29 @@
+{
+  "ERROR_NO_PATH_FOUND_IN_CONFIG": "ERROR: No path found in route config item.",
+  "WARNING_FILES_RESPONSE_DATA_NOT_FOUND": [
+    "WARNING: Files with response data for key: %key% not found:",
+    "\"%filePathWithStatus%\"",
+    "\"%filePathDefault%\"",
+    "Route \"%path%\" will be served with empty response."
+  ],
+  "WARNING_MISSING_ROUTE_DEFINITIONS": [
+    "WARNING: Missing routes definitions or definitions file has wrong format.",
+    "Please define some routes in server options { routes: [ ... ] },",
+    "or provide path to routes config JS file.",
+    "For example in { routes: \"./routes.js\" } config file could contain:",
+    "module.exports = [",
+    "  { key: 'PRODUCT_CREATE', method: 'POST', path: '/api/product', status: '200' },",
+    "  { key: 'PRODUCT_DETAIL', method: 'GET', path: '/api/product/:id', status: '200' },",
+    "  { key: 'PRODUCT_DELETE', method: 'DELETE', path: '/api/product/:id', status: '400' }",
+    "];",
+    "Look into documentation for more details."
+  ],
+  "WARNING_NO_DATA_OR_KEY": [
+    "WARNING: You provided no data or key.",
+    "Route \"%path%\" will be served with empty response."
+  ],
+  "WARNING_NO_VALID_METHOD": [
+    "WARNING: No valid method found in routes list config item.",
+    "WARNING: Available methods are: %methods%"
+  ]
+}

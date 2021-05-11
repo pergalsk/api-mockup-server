@@ -4,10 +4,11 @@ const express = require('express');
 const corsMiddleware = require('cors');
 const chalk = require('chalk');
 
-const utils = require('./lib/utils');
-const log = require('./lib/log');
 const defaultOptions = require('./lib/definitions');
 const methods = require('./lib/methods');
+const _t = require('./lib/texts');
+const log = require('./lib/log');
+const utils = require('./lib/utils');
 
 function smServer(options = {}) {
   console.log(chalk.green('*** ') + `Starting Simple mock server.`);
@@ -43,18 +44,7 @@ function smServer(options = {}) {
   }
 
   if (routesList.length === 0) {
-    log.warning([
-      `WARNING: Missing routes definitions or definitions file has wrong format.`,
-      `Please define some routes in server options { routes: [ ... ] },`,
-      `or provide path to routes config JS file.`,
-      `For example in { routes: "./routes.js" } config file could contain:`,
-      `module.exports = [`,
-      `  { key: 'PRODUCT_CREATE', method: 'POST', path: '/api/product', status: '200' },`,
-      `  { key: 'PRODUCT_DETAIL', method: 'GET', path: '/api/product/:id', status: '200' },`,
-      `  { key: 'PRODUCT_DELETE', method: 'DELETE', path: '/api/product/:id', status: '201' }`,
-      `];`,
-      `Look into documentation for more details.`,
-    ]);
+    log.warning(_t('WARNING_MISSING_ROUTE_DEFINITIONS'));
   }
 
   // generate rest API routes
@@ -62,8 +52,13 @@ function smServer(options = {}) {
 
   // starts server listening
   app.listen(port, () => {
-    console.log(chalk.green('*** ') + `Simple mock server listening at http://localhost:${port}`);
-    log.log('Handled routes:');
+    console.log(
+      chalk.green('*** ') +
+        `Simple mock server listening at ` +
+        chalk.green(`http://localhost:${port}`)
+    );
+    log.log(chalk.green('*** ') + 'Handled routes:');
+
     if (Array.isArray(routesList) && routesList.length === 0) {
       log.info('No routes defined.');
     }
@@ -80,7 +75,13 @@ function smServer(options = {}) {
     let { data } = route;
 
     if (!path) {
-      log.error('ERROR: No path found in route config item.');
+      log.error(_t('ERROR_NO_PATH_FOUND_IN_CONFIG'));
+      return;
+    }
+
+    // check for valid HTTP method
+    if (methods.indexOf(method.toUpperCase()) === -1) {
+      log.warning(_t('WARNING_NO_VALID_METHOD', { methods: methods.join(', ') }));
       return;
     }
 
@@ -101,40 +102,32 @@ function smServer(options = {}) {
           } else if (nodeFs.existsSync(filePathDefault)) {
             data = nodeFs.readFileSync(filePathDefault, encoding);
           } else {
-            log.warning([
-              `WARNING: Files with response data for key: ${key} not found:`,
-              `"${filePathWithStatus}"`,
-              `"${filePathDefault}"`,
-              `Route "${path}" will be served with empty response.`,
-            ]);
+            log.warning(
+              _t('WARNING_FILES_RESPONSE_DATA_NOT_FOUND', {
+                key,
+                filePathWithStatus,
+                filePathDefault,
+                path,
+              })
+            );
           }
         } catch (e) {
-          log.warning([
-            `WARNING: Files with response data for key: ${key} not found:`,
-            `"${filePathWithStatus}"`,
-            `"${filePathDefault}"`,
-            `Route "${path}" will be served with empty response.`,
-          ]);
+          log.warning(
+            _t('WARNING_FILES_RESPONSE_DATA_NOT_FOUND', {
+              key,
+              filePathWithStatus,
+              filePathDefault,
+              path,
+            })
+          );
         }
       } else {
-        log.warning([
-          `WARNING: You provided no data or key.`,
-          `Route "${path}" will be served with empty response.`,
-        ]);
+        log.warning(_t('WARNING_NO_DATA_OR_KEY', { path }));
       }
     }
 
     // remove part with URL paramaters (? and chars after)
     const basePath = prefix + utils.getBasePath(path);
-
-    // check for valid HTTP method
-    if (methods.indexOf(method.toUpperCase()) === -1) {
-      log.warning([
-        'WARNING: No valid method found in routes list config item.',
-        'WARNING: Available methods are: ' + methods.join(', '),
-      ]);
-      return;
-    }
 
     // register HTTP method
     app[method.toLowerCase()](basePath, (req, res) => {
@@ -143,6 +136,7 @@ function smServer(options = {}) {
       // delay response
       const interval = delay || utils.getRandomInt(delayInterval.min, delayInterval.max);
 
+      // TODO: fix problem with not JSON data (e.g. plain string)
       res.type('application/json');
       res.status(status);
 
