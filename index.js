@@ -2,6 +2,7 @@ const nodeFs = require('fs');
 const nodePath = require('path');
 const express = require('express');
 const corsMiddleware = require('cors');
+const chokidar = require('chokidar');
 const chalk = require('chalk');
 
 const defaultOptions = require('./lib/definitions');
@@ -62,6 +63,12 @@ function smServer(options = {}) {
     if (Array.isArray(routesList) && routesList.length === 0) {
       log.info('No routes defined.');
     }
+  });
+
+  // watch for changes
+  const watcher = chokidar.watch([routes, database]);
+  watcher.on('change', (path, stats) => {
+    log.warning(_t('FILE_OR_DIR_CHANGED', { path }));
   });
 
   // methods
