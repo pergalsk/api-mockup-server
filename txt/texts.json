@@ -1,7 +1,7 @@
 {
   "ERROR_NO_PATH_FOUND_IN_CONFIG": "ERROR: No path found in route config item.",
   "FILE_OR_DIR_CHANGED": "File \"%path%\" was changed. Please restart the server for the changes to take effect.",
-  "SKIPPING_ROUTE_REGISTRATION": "Skipping route registration.",
+  "ROUTE_WAS_NOT_REGISTERED": "Route was not registered.",
   "WARNING_FILES_RESPONSE_DATA_NOT_FOUND": [
     "WARNING: Files with response data for key: %key% not found:",
     "\"%filePathWithStatus%\"",
