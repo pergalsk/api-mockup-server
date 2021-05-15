@@ -63,10 +63,20 @@ function smServer(options = {}) {
   });
 
   // watch for changes
-  const watcher = chokidar.watch([routes, database]);
-  watcher.on('change', (path, stats) => {
-    log.warning(_t('FILE_OR_DIR_CHANGED', { path }));
-  });
+  const watchLocations = [];
+  if (typeof routes === 'string') {
+    watchLocations.push(routes);
+  }
+  if (typeof database === 'string') {
+    watchLocations.push(database);
+  }
+
+  if (watchLocations.length > 0) {
+    const watcher = chokidar.watch(watchLocations);
+    watcher.on('change', (path, stats) => {
+      log.warning(_t('FILE_OR_DIR_CHANGED', { path }));
+    });
+  }
 }
 
 module.exports = smServer;
