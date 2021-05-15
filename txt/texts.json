@@ -25,6 +25,6 @@
   ],
   "WARNING_NO_VALID_METHOD": [
     "WARNING: No valid method found in routes list config item.",
-    "WARNING: Available methods are: %methods%"
+    "Available methods: %methods%"
   ]
 }
