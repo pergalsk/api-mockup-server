@@ -1,10 +1,9 @@
 const express = require('express');
 const corsMiddleware = require('cors');
-const chokidar = require('chokidar');
 const chalk = require('chalk');
-
-const routing = require('./lib/register');
 const defaultOptions = require('./lib/definitions');
+const routing = require('./lib/register');
+const watcher = require('./lib/watch');
 const log = require('./lib/log');
 const _t = require('./lib/texts');
 
@@ -32,20 +31,7 @@ function smServer(options = {}) {
   app.listen(port, log.serverListen(port, routesList));
 
   // watch for changes
-  const watchLocations = [];
-  if (typeof routes === 'string') {
-    watchLocations.push(routes);
-  }
-  if (typeof database === 'string') {
-    watchLocations.push(database);
-  }
-
-  if (watchLocations.length > 0) {
-    const watcher = chokidar.watch(watchLocations);
-    watcher.on('change', (path, stats) => {
-      log.warning(_t('FILE_OR_DIR_CHANGED', { path }));
-    });
-  }
+  watcher.watch([routes, database]);
 }
 
 module.exports = smServer;
