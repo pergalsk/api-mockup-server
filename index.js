@@ -11,7 +11,7 @@ function smServer(options = {}) {
   console.log(chalk.green('*** ') + `Starting Simple mock server.`);
 
   const serverOptions = { ...defaultOptions.server, ...options };
-  const { port, routes, database, cors } = serverOptions;
+  const { port, prefix, routes, database, cors } = serverOptions;
 
   // create express application
   const app = express();
@@ -23,12 +23,11 @@ function smServer(options = {}) {
     app.use(corsMiddleware());
   }
 
-  // generate rest API routes
-  const routesList = routing.getRoutes(routes);
-  routesList.forEach(routing.register(app, serverOptions));
+  // use generated router middleware
+  app.use(prefix, routing.getRouter(serverOptions));
 
   // start server listening
-  app.listen(port, log.serverListen(port, routesList));
+  app.listen(port, log.serverListen(port /* routesList */));
 
   // watch for changes
   watcher.watch([routes, database]);
