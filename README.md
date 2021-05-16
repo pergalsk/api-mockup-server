@@ -57,6 +57,11 @@ Server will listen on port 9933 (or according to your configuration).
 
 ## TODO
 
+**Fix**
+
+- cors option - if false, it takes not efect
+- watch for changes
+
 **Features**
 
 - standard error response data overrides
