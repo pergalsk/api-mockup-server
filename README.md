@@ -9,7 +9,7 @@ Simple mock server is useful for simple rest API response mock-up. Just define c
 Create server.js file:
 
 ```javascript
-const smServer = require('simple-mock-server);
+const smServer = require('simple-mock-server');
 
 smServer({
   routes: [{ path: '/posts' }],
@@ -31,7 +31,7 @@ Let's take a look on more useful server config options.
 Create server.js file:
 
 ```javascript
-const smServer = require('simple-mock-server);
+const smServer = require('simple-mock-server');
 
 smServer({
   port: 9933,
@@ -42,8 +42,8 @@ smServer({
   cors: false,
   delay: {
     min: 150,
-    max: 1800
-  }
+    max: 1800,
+  },
 });
 ```
 
