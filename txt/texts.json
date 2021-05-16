@@ -1,4 +1,5 @@
 {
+  "AVAILABLE_METHODS": "Available methods: %methods%",
   "ERROR_NO_PATH_FOUND_IN_CONFIG": "ERROR: No path found in route config item.",
   "FILE_OR_DIR_CHANGED": "File \"%path%\" was changed. Please restart the server for the changes to take effect.",
   "HANDLED_ROUTES": "Handled routes:",
@@ -11,10 +12,7 @@
     "\"%filePathDefault%\"",
     "Route \"%path%\" will be served with empty response."
   ],
-  "WARNING_INVALID_METHOD": [
-    "WARNING: Invalid method (%method%) found in routes list config item.",
-    "Available methods: %methods%"
-  ],
+  "WARNING_INVALID_METHOD": "WARNING: Invalid method (%method%) found in route config item.",
   "WARNING_MISSING_ROUTE_DEFINITIONS": [
     "WARNING: Missing routes definitions or definitions file has wrong format.",
     "Please define some routes in server options { routes: [ ... ] },",
@@ -31,8 +29,5 @@
     "WARNING: You provided no data or key.",
     "Route \"%path%\" will be served with empty response."
   ],
-  "WARNING_NO_VALID_METHOD": [
-    "WARNING: No valid method found in routes list config item.",
-    "Available methods: %methods%"
-  ]
+  "WARNING_NO_VALID_METHOD": "WARNING: No valid method found in route config item."
 }
