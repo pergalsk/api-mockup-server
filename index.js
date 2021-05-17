@@ -5,7 +5,6 @@ const defaultOptions = require('./lib/definitions');
 const routing = require('./lib/register');
 const watcher = require('./lib/watch');
 const log = require('./lib/log');
-const _t = require('./lib/texts');
 
 function smServer(options = {}) {
   console.log(chalk.green('*** ') + `Starting Simple mock server.`);
