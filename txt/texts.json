@@ -7,6 +7,7 @@
   "NO_ROUTES_DEFINED": "No routes defined.",
   "ROUTE_WAS_NOT_REGISTERED": "Route was not registered.",
   "SERVER_LISTENING_AT": "Simple mock server listening at ",
+  "STARTING_SM_SERVER": "Starting Simple mock server.",
   "WARNING_FILES_RESPONSE_DATA_NOT_FOUND": [
     "WARNING: Files with response data for key: %key% not found:",
     "\"%filePathWithStatus%\"",

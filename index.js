@@ -1,13 +1,12 @@
 const express = require('express');
 const corsMiddleware = require('cors');
-const chalk = require('chalk');
 const defaultOptions = require('./lib/definitions');
 const routing = require('./lib/register');
 const watcher = require('./lib/watch');
 const log = require('./lib/log');
 
 function smServer(options = {}) {
-  console.log(chalk.green('*** ') + `Starting Simple mock server.`);
+  log.serverStart();
 
   const serverOptions = { ...defaultOptions.server, ...options };
   const { port, prefix, routes, database, cors } = serverOptions;
@@ -18,6 +17,7 @@ function smServer(options = {}) {
   // use middleware
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
+
   if (cors === true) {
     app.use(corsMiddleware());
   }
