@@ -44,6 +44,10 @@ smServer({
     min: 150,
     max: 1800,
   },
+  bypass: {
+    server: 'http://localhost:7009',
+    prefix: '/data',
+  },
 });
 ```
 
@@ -54,6 +58,40 @@ node server.js
 ```
 
 Server will listen on port 9933 (or according to your configuration).
+
+### Routes file example
+
+```javascript
+module.exports = [
+  {
+    key: 'POSTS_ALL',
+    path: '/posts',
+    method: 'GET',
+    status: '200',
+    callback: (req, res, data) => {
+      const date = new Date();
+      const timestamp = date.getTime();
+      return data.map((item) => {
+        item._t = timestamp;
+        return item;
+      });
+    },
+  },
+  {
+    key: 'GET_CATALOG',
+    path: '/catalog/:catalogname',
+    method: 'GET',
+    status: '200',
+    bypass: true,
+    callback: (req, res, mockData, extData) => {
+      if (req.params.catalogname === 'USERTYPES') {
+        return mockData;
+      }
+      return extData;
+    },
+  },
+];
+```
 
 ## TODO
 
