@@ -18,7 +18,7 @@ function smServer(options = {}) {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
-  if (cors === true) {
+  if (cors !== false) {
     app.use(corsMiddleware());
   }
 
