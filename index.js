@@ -2,6 +2,7 @@ const express = require('express');
 const corsMiddleware = require('cors');
 const defaultOptions = require('./lib/definitions');
 const routing = require('./lib/register');
+const proxy = require('./lib/proxy');
 const watcher = require('./lib/watch');
 const log = require('./lib/log');
 
@@ -21,6 +22,9 @@ function smServer(options = {}) {
   if (cors !== false) {
     app.use(corsMiddleware());
   }
+
+  // use generated http proxy middleware
+  app.use(proxy.getProxy(serverOptions));
 
   // use generated router middleware
   app.use(prefix, routing.getRouter(serverOptions));

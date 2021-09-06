@@ -44,7 +44,7 @@ smServer({
     min: 150,
     max: 1800,
   },
-  bypass: {
+  proxy: {
     server: 'http://localhost:7009',
     prefix: '/data',
   },
@@ -64,6 +64,7 @@ Server will listen on port 9933 (or according to your configuration).
 ```javascript
 module.exports = [
   {
+    active: true,
     key: 'POSTS_ALL',
     path: '/posts',
     method: 'GET',
@@ -78,16 +79,13 @@ module.exports = [
     },
   },
   {
+    active: true,
     key: 'GET_CATALOG',
     path: '/catalog/:catalogname',
     method: 'GET',
     status: '200',
-    bypass: true,
-    callback: (req, res, mockData, extData) => {
-      if (req.params.catalogname === 'USERTYPES') {
-        return mockData;
-      }
-      return extData;
+    applyIf: (pathname, req, context) => {
+      return true;
     },
   },
 ];
