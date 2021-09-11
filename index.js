@@ -15,10 +15,6 @@ function smServer(options = {}) {
   // create express application
   const app = express();
 
-  // use middleware
-  app.use(express.json());
-  app.use(express.urlencoded({ extended: true }));
-
   if (cors !== false) {
     app.use(corsMiddleware());
   }
@@ -28,6 +24,12 @@ function smServer(options = {}) {
 
   // use generated router middleware
   app.use(prefix, routing.getRouter(serverOptions));
+
+  // use JSON middleware
+  app.use(express.json());
+
+  // use encode URLs middleware
+  app.use(express.urlencoded({ extended: true }));
 
   // start server listening
   app.listen(port, log.serverListen(port /* routesList */));
