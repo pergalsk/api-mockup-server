@@ -46,7 +46,6 @@ smServer({
   },
   proxy: {
     server: 'http://localhost:7009',
-    prefix: '/data',
   },
 });
 ```
