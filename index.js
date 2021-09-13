@@ -22,14 +22,14 @@ function smServer(options = {}) {
   // use generated http proxy middleware
   app.use(proxy.getProxy(serverOptions));
 
-  // use generated router middleware
-  app.use(prefix, routing.getRouter(serverOptions));
-
   // use JSON middleware
   app.use(express.json());
 
   // use encode URLs middleware
   app.use(express.urlencoded({ extended: true }));
+
+  // use generated router middleware
+  app.use(prefix, routing.getRouter(serverOptions));
 
   // start server listening
   app.listen(port, log.serverListen(port /* routesList */));
