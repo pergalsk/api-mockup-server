@@ -92,18 +92,17 @@ module.exports = [
 
 ## TODO
 
-**Fix**
-
-- cors option - if false, it takes not efect
-- watch for changes
-
 **Features**
 
+- pass data from proxy to user callback method (if applyIf method returns false)
 - standard error response data overrides
 - watch for changes
 - comandline params: port, database folder (APIs for different projects)
 
 **Develop**
 
-- prettier
 - ES modules
+
+**Fix**
+
+- ...
