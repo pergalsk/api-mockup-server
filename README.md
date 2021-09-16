@@ -83,8 +83,8 @@ module.exports = [
     path: '/catalog/:catalogname',
     method: 'GET',
     status: '200',
-    applyIf: (pathname, req, context) => {
-      return true;
+    applyIf: (req, params) => {
+      return params.catalogname === 'books';
     },
   },
 ];
