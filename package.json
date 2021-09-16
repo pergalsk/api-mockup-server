@@ -1,6 +1,6 @@
 {
   "name": "simple-mock-server",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "description": "Simple restAPI JSON mocking server",
   "main": "index.js",
   "scripts": {},
