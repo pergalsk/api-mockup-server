@@ -32,7 +32,7 @@ function smServer(options = {}) {
   app.use(prefix, routing.getRouter(serverOptions));
 
   // start server listening
-  app.listen(port, log.serverListen(port /* routesList */));
+  app.listen(port, log.serverListen(serverOptions /* routesList */));
 
   // watch for changes
   watcher.watch([routes, database]);

@@ -1,5 +1,5 @@
 {
-  "ACTIVE_REGISTERED_ROUTES": "Routes list (active:%active% / all:%all% / invalid:%invalid%):",
+  "ACTIVE_REGISTERED_ROUTES": "Routes list (active:%active% / all:%all% / invalid:%invalid%)",
   "AVAILABLE_METHODS": "Available methods: %methods%",
   "EMPTY_RESPONSE": "(empty response)",
   "ERROR_NO_PATH_FOUND_IN_CONFIG": "ERROR: No path found in route config item.",
@@ -10,6 +10,7 @@
   "PROXY_CONFIGURED": "Proxy server configured. Not active routes will be redirected.",
   "PROXY_LABEL": "Proxy:",
   "PROXY_NOT_CONFIGURED": "Proxy server was not configured. Serving only defined routes.",
+  "PROXY_SERVER_AT": "Proxy server at ",
   "ROUTE_WAS_NOT_REGISTERED": "Route was not registered.",
   "ROUTES_MARKED_WITH_ASTERISK": "(routes marked with asterisk (*) are conditionaly mocked)",
   "SERVER_LISTENING_AT": "Simple mock server listening at ",
@@ -21,11 +22,15 @@
     "Route \"%path%\" will be served with empty response."
   ],
   "WARNING_INVALID_METHOD": "WARNING: Invalid method (%method%) found in route config item.",
+  "WARNING_MISSING_ROUTE_DEFINITIONS_SERVER_ACTIVE": [
+    "WARNING: Missing routes definitions.",
+    "All requests will be redirected to proxy server."
+  ],
   "WARNING_MISSING_ROUTE_DEFINITIONS": [
     "WARNING: Missing routes definitions or definitions file has wrong format.",
     "Please define some routes in server options { routes: [ ... ] },",
     "or provide path to routes config JS file.",
-    "For example in { routes: \"./routes.js\" } config file could contain:",
+    "For example config file in { routes: \"./routes.js\" } could contain:",
     "module.exports = [",
     "  { active: true, key: 'PRODUCT_CREATE', method: 'POST', path: '/api/product', status: '200' },",
     "  { active: true, key: 'PRODUCT_DETAIL', method: 'GET', path: '/api/product/:id', status: '200' },",
