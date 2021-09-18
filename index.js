@@ -6,7 +6,7 @@ const proxy = require('./lib/proxy');
 const watcher = require('./lib/watch');
 const log = require('./lib/log');
 
-function smServer(options = {}) {
+async function smServer(options = {}) {
   log.serverStart();
 
   const serverOptions = { ...defaultOptions.server, ...options };
@@ -20,7 +20,7 @@ function smServer(options = {}) {
   }
 
   // use generated http proxy middleware
-  app.use(proxy.getProxy(serverOptions));
+  app.use(await proxy.getProxy(serverOptions));
 
   // use JSON middleware
   app.use(express.json());

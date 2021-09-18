@@ -45,7 +45,12 @@ smServer({
     max: 1800,
   },
   proxy: {
-    server: 'http://localhost:7009',
+    server: [
+      'http://localhost:7000',
+      'http://localhost:3000',
+      'http://some.server.example',
+      'http://another.server.example',
+    ],
   },
 });
 ```
@@ -94,6 +99,7 @@ module.exports = [
 
 **Features**
 
+- custom prefix per route - override the global prefix
 - pass data from proxy to user callback method (if applyIf method returns false)
 - standard error response data overrides
 - watch for changes

@@ -11,6 +11,7 @@
   "PROXY_LABEL": "Proxy:",
   "PROXY_NOT_CONFIGURED": "Proxy server was not configured. Serving only defined routes.",
   "PROXY_SERVER_AT": "Proxy server at ",
+  "PROXY_TARGET": "Proxy target:",
   "ROUTE_WAS_NOT_REGISTERED": "Route was not registered.",
   "ROUTES_MARKED_WITH_ASTERISK": "(routes marked with asterisk (*) are conditionaly mocked)",
   "SERVER_LISTENING_AT": "Simple mock server listening at ",
