@@ -3,6 +3,7 @@
   "AVAILABLE_METHODS": "Available methods: %methods%",
   "EMPTY_RESPONSE": "(empty response)",
   "ERROR_NO_PATH_FOUND_IN_CONFIG": "ERROR: No path found in route config item.",
+  "ERROR_WHILE_READING_JSON_FILE": "ERROR: Wrong format in file with response data for key: \"%key%\"",
   "FILE_OR_DIR_CHANGED": "File \"%path%\" has been changed. Please restart the server for the changes to take effect.",
   "FILE_OR_DIR_ADDED": "File \"%path%\" has been added. Please restart the server for the changes to take effect.",
   "HANDLED_ROUTES": "Handled routes:",
@@ -12,6 +13,7 @@
   "PROXY_NOT_CONFIGURED": "Proxy server was not configured. Serving only defined routes.",
   "PROXY_SERVER_AT": "Proxy server at ",
   "PROXY_TARGET": "Proxy target:",
+  "ROUTE_PATH_SERVED_EMPTY": "Route \"%path%\" will be served with empty response.",
   "ROUTE_WAS_NOT_REGISTERED": "Route was not registered.",
   "ROUTES_MARKED_WITH_ASTERISK": "(routes marked with asterisk (*) are conditionaly mocked)",
   "SERVER_LISTENING_AT": "Simple mock server listening at ",
@@ -19,8 +21,7 @@
   "WARNING_FILES_RESPONSE_DATA_NOT_FOUND": [
     "WARNING: Files with response data for key: %key% not found:",
     "\"%filePathWithStatus%\"",
-    "\"%filePathDefault%\"",
-    "Route \"%path%\" will be served with empty response."
+    "\"%filePathDefault%\""
   ],
   "WARNING_INVALID_METHOD": "WARNING: Invalid method (%method%) found in route config item.",
   "WARNING_MISSING_ROUTE_DEFINITIONS_SERVER_ACTIVE": [
