@@ -140,9 +140,12 @@ smServer(serverConfigOptions);
     <td>"utf8"</td>
   </tr>
   <tr>
-    <td><b>cors</b><br><small><em>(optional)</em></small></td>
+    <td><b>cors</b><br><em><small>(optional)</small></em></td>
     <td><code>Boolean</code></td>
-    <td><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS">Cross-Origin Resource Sharing</a> policy. Set to <code>false</code> if you don't wont it.</td>
+    <td>
+      <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS">Cross-Origin Resource Sharing</a> policy.
+      <br>Set to <code>false</code> if you don't wont it.
+    </td>
     <td>true</td>
   </tr>
   <tr>
@@ -159,16 +162,16 @@ smServer(serverConfigOptions);
     <td>Proxy server configuration object. Undefined or not active routes will be redirected to proxy target. If server is defined as an array, on the start the interactive CLI will ask you to choose from given list of server adresses.
       <br>Example: <code>{ server: "http://localhost:3000" }</code>
       <br>Example: 
-<code>
+<pre>
 {
-  server: [<br>
-    'http://localhost:7000',<br>
-    'http://localhost:3000',<br>
-    'http://some.server.example',<br>
-    'http://another.server.example',<br>
+  server: [
+    'http://localhost:7000',
+    'http://localhost:3000',
+    'http://some.server.example',
+    'http://another.server.example',
   ]
 }
-</code>
+</pre>
     </td>
     <td>null</td>
   </tr>
