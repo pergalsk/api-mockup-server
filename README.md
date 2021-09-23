@@ -26,7 +26,7 @@ Now, when you try to GET http://localhost:9933/posts server will response with d
 
 Let's take a look on more useful server config options.
 
-### More enhanced server configuration
+### More advanced server configuration
 
 Create server.js file:
 
@@ -94,6 +94,85 @@ module.exports = [
   },
 ];
 ```
+
+## Server configuration options
+
+```javascript
+const smServer = require('simple-mock-server');
+
+const serverConfigOptions = {
+  // configuration possibilities are defined in table below
+};
+
+smServer(serverConfigOptions);
+```
+
+<table>
+  <tr><th>Parameter</th><th>Type</th><th>Description</th><th>Default value</th></tr>
+  <tr>
+    <td><b>port</b><br><small><em>(optional)</em></small></td>
+    <td><code>Number</code></td>
+    <td>The port on which mock server will listen.</td>
+    <td>9933</td>
+  </tr>
+  <tr>
+    <td><b>routes</b><br><small><em>(mandatory)</em></small></td>
+    <td><code>String | Array</code></td>
+    <td>Definitions of API routes. It could be array or path to definition file.<br>Example: <code>"./routes.js"</code></td>
+    <td>[]</td>
+  </tr>
+  <tr>
+    <td><b>database</b><br><small><em>(optional)</em></small></td>
+    <td><code>String</code></td>
+    <td>Directory name or path to directory in wich are stored json data files with responses.<br>Example: <code>"db"</code></td>
+    <td>"database"</td>
+  </tr>
+  <tr>
+    <td><b>prefix</b><br><small><em>(optional)</em></small></td>
+    <td><code>String</code></td>
+    <td>Api route prefix. <br>Example: <code>"/api/v1"</code></td>
+    <td>""</td>
+  </tr>
+  <tr>
+    <td><b>encoding</b><br><small><em>(optional)</em></small></td>
+    <td><code>String</code></td>
+    <td>Response text encoding.</td>
+    <td>"utf8"</td>
+  </tr>
+  <tr>
+    <td><b>cors</b><br><small><em>(optional)</em></small></td>
+    <td><code>Boolean</code></td>
+    <td><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS">Cross-Origin Resource Sharing</a> policy. Set to <code>false</code> if you don't wont it.</td>
+    <td>true</td>
+  </tr>
+  <tr>
+    <td><b>delay</b><br><small><em>(optional)</em></small></td>
+    <td><code>Object</code></td>
+    <td>Mocked response delay. Random delay will be generated between <code>max</code> and <code>min</code> values in miliseconds.
+      <br>Example: <code>{ min: 500, max: 2500 }</code>
+    </td>
+    <td>{ min: 0, max: 0}</td>
+  </tr>
+  <tr>
+    <td><b>proxy</b><br><small><em>(optional)</em></small></td>
+    <td><code>Object</code></td>
+    <td>Proxy server configuration object. Undefined or not active routes will be redirected to proxy target. If server is defined as an array, on the start the interactive CLI will ask you to choose from given list of server adresses.
+      <br>Example: <code>{ server: "http://localhost:3000" }</code>
+      <br>Example: 
+<code>
+{
+  server: [<br>
+    'http://localhost:7000',<br>
+    'http://localhost:3000',<br>
+    'http://some.server.example',<br>
+    'http://another.server.example',<br>
+  ]
+}
+</code>
+    </td>
+    <td>null</td>
+  </tr>
+</table>
 
 ## TODO
 
