@@ -2,13 +2,20 @@
 
 Simple mock server is useful for simple rest API response mock-up. Just define couple of routes with response data and start server. Server will listen on default port 9933.
 
-## How to use
+## Installation
+
+```
+npm install simple-mock-server --save
+```
+
+## Usage
 
 ### Minimal server configuration
 
 Create server.js file:
 
 ```javascript
+// server.js
 const smServer = require('simple-mock-server');
 
 smServer({
@@ -26,16 +33,17 @@ Now, when you try to GET http://localhost:9933/posts server will response with d
 
 Let's take a look on more useful server config options.
 
-### More advanced server configuration
+### Advanced server configuration
 
-Create server.js file:
+Update server.js file:
 
 ```javascript
+// server.js
 const smServer = require('simple-mock-server');
 
 smServer({
   port: 9933,
-  routes: './paths',
+  routes: './paths.js',
   database: 'db',
   encoding: 'utf8',
   prefix: '/api',
@@ -55,17 +63,10 @@ smServer({
 });
 ```
 
-Then run with command:
-
-```
-node server.js
-```
-
-Server will listen on port 9933 (or according to your configuration).
-
 ### Routes file example
 
 ```javascript
+// paths.js
 module.exports = [
   {
     active: true,
@@ -95,6 +96,14 @@ module.exports = [
 ];
 ```
 
+Then run with command:
+
+```
+node server.js
+```
+
+Server will listen on port 9933 (or according to your configuration).
+
 ## Server configuration options
 
 ```javascript
@@ -108,7 +117,7 @@ smServer(serverConfigOptions);
 ```
 
 <table>
-  <tr><th>Parameter</th><th>Type</th><th>Description</th><th>Default value</th></tr>
+  <tr><th>Parameter</th><th>Type</th><th>Description</th><th>Default</th></tr>
   <tr>
     <td><b>port</b><br><small><em>(optional)</em></small></td>
     <td><code>Number</code></td>
@@ -194,3 +203,7 @@ smServer(serverConfigOptions);
 **Fix**
 
 - ...
+
+## License
+
+MIT
