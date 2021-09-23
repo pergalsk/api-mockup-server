@@ -33,7 +33,7 @@ Now, when you try to GET http://localhost:9933/posts server will response with d
 
 Let's take a look on more useful server config options.
 
-### Advanced server configuration
+### Typical server configuration
 
 Update server.js file:
 
@@ -47,7 +47,6 @@ smServer({
   database: 'db',
   encoding: 'utf8',
   prefix: '/api',
-  cors: false,
   delay: {
     min: 150,
     max: 1800,
