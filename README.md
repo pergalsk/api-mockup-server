@@ -62,7 +62,7 @@ smServer({
 });
 ```
 
-### Routes file example
+Add paths.js file
 
 ```javascript
 // paths.js
