@@ -19,7 +19,7 @@
   "ROUTE_PATH_SERVED_EMPTY": "Route \"%path%\" will be served with empty response.",
   "ROUTE_WAS_NOT_REGISTERED": "Route was not registered.",
   "ROUTES_MARKED_WITH_ASTERISK": "(routes marked with asterisk (*) are conditionaly mocked)",
-  "SERVER_LISTENING_AT": "Simple mock server listening at ",
+  "SERVER_LISTENING_AT": "Simple mock server is listening on port: ",
   "STARTING_SM_SERVER": "Starting Simple mock server.",
   "WARNING_FILES_RESPONSE_DATA_NOT_FOUND": [
     "WARNING: Files with response data for key: %key% not found:",
