@@ -32,11 +32,11 @@
   ],
   "WARNING_INVALID_METHOD": "WARNING: Invalid method (%method%) found in route config item.",
   "WARNING_MISSING_ROUTE_DEFINITIONS_SERVER_ACTIVE": [
-    "WARNING: Missing routes definitions.",
+    "No active routes definitions.",
     "All requests will be redirected to proxy server."
   ],
   "WARNING_MISSING_ROUTE_DEFINITIONS": [
-    "WARNING: Missing routes definitions or definitions file has wrong format.",
+    "WARNING: Missing active routes definitions or definitions file has wrong format.",
     "Please define some routes in server options { routes: [ ... ] },",
     "or provide path to routes config JS file.",
     "For example config file in { routes: \"./routes.js\" } could contain:",
