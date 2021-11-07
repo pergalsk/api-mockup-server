@@ -35,7 +35,7 @@ async function smServer(options = {}) {
   app.listen(port, log.serverListen(serverOptions /* routesList */));
 
   // watch for changes
-  watcher.watch([routes, database]);
+  watcher.watch({ routes, database });
 }
 
 module.exports = smServer;
