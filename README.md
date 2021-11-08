@@ -201,7 +201,7 @@ smServer(serverConfigOptions);
 
 **Fix**
 
-- ...
+- callback method can't receive POST method's body params
 
 ## License
 
