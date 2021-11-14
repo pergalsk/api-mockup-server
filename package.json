@@ -1,7 +1,7 @@
 {
-  "name": "simple-mock-server",
+  "name": "api-mockup-server",
   "version": "2.4.1",
-  "description": "Simple restAPI JSON mocking server",
+  "description": "Simple restAPI JSON mockup server",
   "main": "index.js",
   "scripts": {},
   "author": "Peter Gál",

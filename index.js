@@ -6,7 +6,7 @@ const proxy = require('./lib/proxy');
 const watcher = require('./lib/watch');
 const log = require('./lib/log');
 
-async function smServer(options = {}) {
+async function amServer(options = {}) {
   log.serverStart();
 
   const serverOptions = { ...defaultOptions.server, ...options };
@@ -38,4 +38,4 @@ async function smServer(options = {}) {
   watcher.watch({ routes, database });
 }
 
-module.exports = smServer;
+module.exports = amServer;

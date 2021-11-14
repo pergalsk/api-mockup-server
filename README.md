@@ -1,11 +1,11 @@
-# Simple mock server
+# API Mockup Server
 
-Simple mock server is useful for simple rest API response mock-up. Just define couple of routes with response data and start server. Server will listen on default port 9933.
+Node server for simple rest API JSON response mockup. Just define couple of routes with response data and start the server. Server will listen on default port 9933.
 
 ## Installation
 
 ```
-npm install simple-mock-server --save
+npm install api-mockup-server --save
 ```
 
 ## Usage
@@ -16,9 +16,9 @@ Create server.js file:
 
 ```javascript
 // server.js
-const smServer = require('simple-mock-server');
+const amServer = require('api-mockup-server');
 
-smServer({
+amServer({
   routes: [{ path: '/posts' }],
 });
 ```
@@ -39,17 +39,17 @@ Update server.js file:
 
 ```javascript
 // server.js
-const smServer = require('simple-mock-server');
+const amServer = require('api-mockup-server');
 
-smServer({
+amServer({
   port: 9933,
   routes: './paths.js',
   database: 'db',
   encoding: 'utf8',
   prefix: '/api',
   delay: {
-    min: 150,
-    max: 1800,
+    min: 500,
+    max: 2500,
   },
   proxy: {
     server: [
@@ -106,13 +106,13 @@ Server will listen on port 9933 (or according to your configuration).
 ## Server configuration options
 
 ```javascript
-const smServer = require('simple-mock-server');
+const amServer = require('api-mockup-server');
 
 const serverConfigOptions = {
-  // configuration possibilities are defined in table below
+  // configuration properties are defined in the table below
 };
 
-smServer(serverConfigOptions);
+amServer(serverConfigOptions);
 ```
 
 <table>
@@ -189,10 +189,10 @@ smServer(serverConfigOptions);
 
 **Features**
 
+- include routes via require in config
 - custom prefix per route - override the global prefix
-- pass data from proxy to user callback method (if applyIf method returns false)
 - standard error response data overrides
-- watch for changes
+- watch for changes routes/server
 - comandline params: port, database folder (APIs for different projects)
 
 **Develop**
