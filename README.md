@@ -1,6 +1,6 @@
 # API Mockup Server
 
-Node server for simple rest API JSON response mockup. Just define couple of routes with response data and start the server. Server will listen on default port 9933.
+Node server for simple rest API mockup with JSON format responses. Just define couple of routes with response data and start the server. Server will listen on default port 9933.
 
 ## Installation
 
@@ -10,16 +10,47 @@ npm install api-mockup-server --save
 
 ## Usage
 
-### Minimal server configuration
+### Quick start
 
 Create server.js file:
 
 ```javascript
 // server.js
+
+// load API Mockup Server
 const amServer = require('api-mockup-server');
 
+// define routes
+const routes = [
+  {
+    active: true,
+    path: '/books/all',
+    method: 'GET',
+    status: 200,
+    data: [
+      { id: 10, title: 'Robinson Crusoe' },
+      { id: 20, title: 'Don Quixote' },
+    ],
+  },
+  {
+    active: true,
+    path: '/books/:id',
+    method: 'GET',
+    status: 200,
+    data: {
+      id: 20,
+      title: 'Robinson Crusoe',
+      author: 'Daniel Defoe',
+      pages: 250,
+    },
+  },
+];
+
+// run server
 amServer({
-  routes: [{ path: '/posts' }],
+  port: 9933,
+  prefix: '/api',
+  routes,
 });
 ```
 
@@ -29,12 +60,15 @@ Then run with command:
 node server.js
 ```
 
-Now, when you try to GET http://localhost:9933/posts server will response with default status 200 and empty data. This simple scenario is useful just for checking that route is working fine.
+Now, you can make requests:
+
+- GET http://localhost:9933/api/books/all - server will response with HTTP status 200 and return static data with books list
+- GET http://localhost:9933/api/books/7 - server will response with HTTP status 200 and return static data with book detail (regardless of provided id, in this case 7)
+  Don Quixote
+
+### Advanced server configuration
 
 Let's take a look on more useful server config options.
-
-### Typical server configuration
-
 Update server.js file:
 
 ```javascript
@@ -44,16 +78,12 @@ const amServer = require('api-mockup-server');
 amServer({
   port: 9933,
   routes: './paths.js',
-  database: 'db',
+  database: './db',
+  prefix: '/api/v1',
   encoding: 'utf8',
-  prefix: '/api',
-  delay: {
-    min: 500,
-    max: 2500,
-  },
+  delay: { min: 500, max: 2500 },
   proxy: {
     server: [
-      'http://localhost:7000',
       'http://localhost:3000',
       'http://some.server.example',
       'http://another.server.example',
@@ -62,18 +92,19 @@ amServer({
 });
 ```
 
-Add paths.js file
+Add ./paths.js file in the same directory:
 
 ```javascript
 // paths.js
 module.exports = [
   {
     active: true,
-    key: 'POSTS_ALL',
-    path: '/posts',
+    key: 'BOOKS_ALL',
+    path: '/books/all',
     method: 'GET',
-    status: '200',
+    status: 200,
     callback: (req, res, data) => {
+      // modify returned data
       const date = new Date();
       const timestamp = date.getTime();
       return data.map((item) => {
@@ -84,15 +115,36 @@ module.exports = [
   },
   {
     active: true,
-    key: 'GET_CATALOG',
-    path: '/catalog/:catalogname',
+    key: 'BOOK_DETAIL',
+    path: '/books/:id',
     method: 'GET',
-    status: '200',
+    status: 200,
     applyIf: (req, params) => {
-      return params.catalogname === 'books';
+      // conditionaly mocked if id = 15
+      return params.id === '15';
     },
   },
 ];
+```
+
+Add ./db/POSTS_ALL.json file:
+
+```javascript
+[
+  { id: 10, title: 'Robinson Crusoe' },
+  { id: 20, title: 'Don Quixote' },
+];
+```
+
+Add ./db/BOOK_DETAIL.json file:
+
+```javascript
+{
+  id: 20,
+  title: 'Robinson Crusoe',
+  author: 'Daniel Defoe',
+  pages: 250,
+}
 ```
 
 Then run with command:
@@ -101,7 +153,7 @@ Then run with command:
 node server.js
 ```
 
-Server will listen on port 9933 (or according to your configuration).
+Server will listen on port 9933 (according to your configuration).
 
 ## Server configuration options
 
