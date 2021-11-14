@@ -20,7 +20,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/pergalsk/simple-mock-server.git"
+    "url": "git+https://github.com/pergalsk/api-mockup-server.git"
   },
   "devDependencies": {
     "eslint": "^7.32.0",
