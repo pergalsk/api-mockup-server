@@ -1,11 +1,20 @@
 {
   "name": "api-mockup-server",
-  "version": "2.4.1",
+  "version": "3.0.0",
   "description": "Simple restAPI JSON mockup server",
   "main": "index.js",
   "scripts": {},
   "author": "Peter Gál",
   "license": "MIT",
+  "keywords": [
+    "server",
+    "mock",
+    "mockup",
+    "proxy",
+    "rest",
+    "API",
+    "JSON"
+  ],
   "dependencies": {
     "body-parser": "^1.19.0",
     "chalk": "^4.1.1",
