@@ -132,8 +132,8 @@ Add ./db/POSTS_ALL.json file:
 ```json
 [
   { "id": 10, "title": "Robinson Crusoe" },
-  { "id": 20, "title": "Don Quixote" },
-];
+  { "id": 20, "title": "Don Quixote" }
+]
 ```
 
 Add ./db/BOOK_DETAIL.json file:
