@@ -129,21 +129,21 @@ module.exports = [
 
 Add ./db/POSTS_ALL.json file:
 
-```javascript
+```json
 [
-  { id: 10, title: 'Robinson Crusoe' },
-  { id: 20, title: 'Don Quixote' },
+  { "id": 10, "title": "Robinson Crusoe" },
+  { "id": 20, "title": "Don Quixote" },
 ];
 ```
 
 Add ./db/BOOK_DETAIL.json file:
 
-```javascript
+```json
 {
-  id: 20,
-  title: 'Robinson Crusoe',
-  author: 'Daniel Defoe',
-  pages: 250,
+  "id": 20,
+  "title": "Robinson Crusoe",
+  "author": "Daniel Defoe",
+  "pages": 250
 }
 ```
 
