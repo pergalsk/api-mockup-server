@@ -6,6 +6,10 @@
   "scripts": {},
   "author": "Peter Gál",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pergalsk/api-mockup-server.git"
+  },
   "keywords": [
     "server",
     "mock",
@@ -26,10 +30,6 @@
     "inquirer": "^8.1.5",
     "lodash": "^4.17.21",
     "path-to-regexp": "^6.2.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/pergalsk/api-mockup-server.git"
   },
   "devDependencies": {
     "eslint": "^7.32.0",
