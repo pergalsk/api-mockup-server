@@ -83,6 +83,8 @@ In bigger projects you don't wont to store all your routes and responses in one 
 
 If you want to mockup only some of rest APIs you can use API Mockup Server as a mockup layer between your running back-end server and frontend application. In this scenario you have to configure proxy server target with runnig back-end. If you use more then one target, API Mockup Server will ask you to choose one target via CLI interface on server start.
 
+Note: You have to restart the server when you make changes in configuration files _(server setup and routes config)_ while server is runnig _(except of JSON data files in database folder, which are loaded dynamicaly during request processing)_.
+
 Updated `server.js` file:
 
 ```javascript
@@ -263,7 +265,7 @@ amServer(serverConfigOptions);
   <tr>
     <td><b>proxy</b><br><small><em>(optional)</em></small></td>
     <td><code>Object</code></td>
-    <td>Proxy server configuration object. Undefined or not active routes will be redirected to proxy target. If server is defined as an array, on the start the interactive CLI will ask you to choose from given list of server adresses.
+    <td>Proxy server configuration. Undefined or not active routes will be redirected to proxy target. If server is defined as an array, on the start the interactive CLI will ask you to choose from given list of server adresses.
       <br>Example: <code>{ server: "http://localhost:3000" }</code>
       <br>Example: 
 <pre>
