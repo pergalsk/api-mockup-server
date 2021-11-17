@@ -22,7 +22,7 @@ Create `server.js` file:
 // load API Mockup Server
 const amServer = require('api-mockup-server');
 
-// define routes
+// define some routes
 const routes = [
   {
     active: true,
@@ -57,7 +57,7 @@ const routes = [
   },
 ];
 
-// run server
+// start the server
 amServer({
   port: 9933,
   prefix: '/api',
@@ -81,7 +81,7 @@ Now, you can make 3 requests:
 
 In bigger projects you don't wont to store all your routes and responses in one file. You can configure routes in separate file using `routes` config param and responses in `database` config param providing path to folder containing JSON files with response data.
 
-If you want to mockup only some of rest APIs you can use API Mockup Server as a mockup layer between your running back-end server and frontend application. In this scenario you have to configure proxy server target with runnig back-end. If you use more then one target, API Mockup Server will ask you to choose one target via CLI interface on srever start.
+If you want to mockup only some of rest APIs you can use API Mockup Server as a mockup layer between your running back-end server and frontend application. In this scenario you have to configure proxy server target with runnig back-end. If you use more then one target, API Mockup Server will ask you to choose one target via CLI interface on server start.
 
 Updated `server.js` file:
 
@@ -191,31 +191,53 @@ amServer(serverConfigOptions);
     <td><b>port</b><br><small><em>(optional)</em></small></td>
     <td><code>Number</code></td>
     <td>The port on which mock server will listen.</td>
-    <td>9933</td>
+    <td><code>9933</code></td>
   </tr>
   <tr>
     <td><b>routes</b><br><small><em>(mandatory)</em></small></td>
     <td><code>String | Array</code></td>
-    <td>Definitions of API routes. It could be array or path to definition file.<br>Example: <code>"./routes.js"</code></td>
-    <td>[]</td>
+    <td>Definitions of API routes. It could be array or path to definition file.
+      <br>Example: <code>"./routes.js"</code>
+      <br>Example: 
+<pre>
+[
+  {
+    active: true,
+    path: '/movies',
+    method: 'GET',
+    status: 200,
+    key: 'MOVIES_ALL'
+  },
+  {
+    active: false,
+    path: '/movies/:movieId',
+    method: 'DELETE',
+    status: 400,
+    key: 'DELETE_MOVIE'
+  }
+]
+</pre>
+    </td>
+    <td><code>[]</code></td>
   </tr>
   <tr>
     <td><b>database</b><br><small><em>(optional)</em></small></td>
     <td><code>String</code></td>
-    <td>Directory name or path to directory in wich are stored JSON data files with responses.<br>Example: <code>"./db"</code></td>
-    <td>"database"</td>
+    <td>Directory name or path to directory in wich are stored JSON data files with responses.<br>Example: <code>"./db"</code>
+    </td>
+    <td><code>"database"</code></td>
   </tr>
   <tr>
     <td><b>prefix</b><br><small><em>(optional)</em></small></td>
     <td><code>String</code></td>
     <td>Api route prefix. <br>Example: <code>"/api/v1"</code></td>
-    <td>""</td>
+    <td><code>""</code></td>
   </tr>
   <tr>
     <td><b>encoding</b><br><small><em>(optional)</em></small></td>
     <td><code>String</code></td>
     <td>Response text encoding.</td>
-    <td>"utf8"</td>
+    <td><code>"utf8"</code></td>
   </tr>
   <tr>
     <td><b>cors</b><br><em><small>(optional)</small></em></td>
@@ -224,15 +246,19 @@ amServer(serverConfigOptions);
       <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS">Cross-Origin Resource Sharing</a> policy.
       <br>Set to <code>false</code> if you don't wont it.
     </td>
-    <td>true</td>
+    <td><code>true</code></td>
   </tr>
   <tr>
     <td><b>delay</b><br><small><em>(optional)</em></small></td>
     <td><code>Object</code></td>
-    <td>Mocked response delay. Random delay will be generated between <code>max</code> and <code>min</code> values in miliseconds.
+    <td>Mocked response delay. Random delay will be generated between <code>min</code> and <code>max</code> values in miliseconds.
       <br>Example: <code>{ min: 500, max: 2500 }</code>
+      <p>
+        <br>If you want to define exact response time set <code>min</code> and <code>max</code> params to the same value.
+        <br>Example: <code>{ min: 1000, max: 1000 }</code>
+      </p>
     </td>
-    <td>{ min: 0, max: 0}</td>
+    <td><code>{ min: 0, max: 0}</code></td>
   </tr>
   <tr>
     <td><b>proxy</b><br><small><em>(optional)</em></small></td>
@@ -243,7 +269,6 @@ amServer(serverConfigOptions);
 <pre>
 {
   server: [
-    'http://localhost:7000',
     'http://localhost:3000',
     'http://some.server.example',
     'http://another.server.example',
@@ -251,7 +276,7 @@ amServer(serverConfigOptions);
 }
 </pre>
     </td>
-    <td>null</td>
+    <td><code>null</code></td>
   </tr>
 </table>
 
