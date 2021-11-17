@@ -2,6 +2,8 @@
 
 Node server for simple rest API mockup with JSON format responses. Just define couple of routes with response data and start the server. Server will listen on default port 9933.
 
+API Mockup Server may be usefull during application development when for example back-end part is not ready yet and you want to work separately on front-end with mocked data, or you have a fully functional back-end part but you want to mockup only some of your rest APIs in order to simulate a problematic situation, bugs, edge cases, error responses, etc...
+
 ## Installation
 
 ```
@@ -12,7 +14,7 @@ npm install api-mockup-server --save
 
 ### Quick start
 
-Create server.js file:
+Create `server.js` file:
 
 ```javascript
 // server.js
@@ -44,6 +46,15 @@ const routes = [
       pages: 250,
     },
   },
+  {
+    active: true,
+    path: '/authors',
+    method: 'POST',
+    status: 400,
+    data: {
+      errorMsg: 'Author name is too long!',
+    },
+  },
 ];
 
 // run server
@@ -60,16 +71,19 @@ Then run with command:
 node server.js
 ```
 
-Now, you can make requests:
+Now, you can make 3 requests:
 
-- GET http://localhost:9933/api/books/all - server will response with HTTP status 200 and return static data with books list
-- GET http://localhost:9933/api/books/7 - server will response with HTTP status 200 and return static data with book detail (regardless of provided id, in this case 7)
-  Don Quixote
+- GET `http://localhost:9933/api/books/all` - server will response with HTTP status 200 and return static data with books list
+- GET `http://localhost:9933/api/books/7` - server will response with HTTP status 200 and return static data with book detail _(regardless of provided id, in this case 7)_
+- POST `http://localhost:9933/api/authors` - server will response with HTTP status 400 and return static data with error message _(regardless of provided POST request data)_
 
 ### Advanced server configuration
 
-Let's take a look on more useful server config options.
-Update server.js file:
+In bigger projects you don't wont to store all your routes and responses in one file. You can configure routes in separate file using `routes` config param and responses in `database` config param providing path to folder containing JSON files with response data.
+
+If you want to mockup only some of rest APIs you can use API Mockup Server as a mockup layer between your running back-end server and frontend application. In this scenario you have to configure proxy server target with runnig back-end. If you use more then one target, API Mockup Server will ask you to choose one target via CLI interface on srever start.
+
+Updated `server.js` file:
 
 ```javascript
 // server.js
@@ -77,11 +91,11 @@ const amServer = require('api-mockup-server');
 
 amServer({
   port: 9933,
-  routes: './paths.js',
-  database: './db',
+  routes: './paths.js', // path to file with routes
+  database: './db', // path to directory with JSON files with response data
   prefix: '/api/v1',
   encoding: 'utf8',
-  delay: { min: 500, max: 2500 },
+  delay: { min: 500, max: 2500 }, // delay mocked responses in miliseconds
   proxy: {
     server: [
       'http://localhost:3000',
@@ -92,14 +106,16 @@ amServer({
 });
 ```
 
-Add ./paths.js file in the same directory:
+In routes configuration you can instead of `data` param define `key` param which is used to find corresponding JSON file with response data.
+
+Add `./paths.js` file in the same directory:
 
 ```javascript
 // paths.js
 module.exports = [
   {
     active: true,
-    key: 'BOOKS_ALL',
+    key: 'BOOKS_ALL', // key for response data stored in ./db/POSTS_ALL.json
     path: '/books/all',
     method: 'GET',
     status: 200,
@@ -115,19 +131,21 @@ module.exports = [
   },
   {
     active: true,
-    key: 'BOOK_DETAIL',
+    key: 'BOOK_DETAIL', // key for response data stored in ./db/BOOK_DETAIL.json
     path: '/books/:id',
     method: 'GET',
     status: 200,
     applyIf: (req, params) => {
-      // conditionaly mocked if id = 15
-      return params.id === '15';
+      // conditionaly mocked if request URL param id = 10
+      return params.id === '10';
     },
   },
 ];
 ```
 
-Add ./db/POSTS_ALL.json file:
+According to used route keys you need to create corresponding files in database folder. If file is missing, route will have empty response.
+
+Add `./db/BOOKS_ALL.json` file:
 
 ```json
 [
@@ -136,11 +154,11 @@ Add ./db/POSTS_ALL.json file:
 ]
 ```
 
-Add ./db/BOOK_DETAIL.json file:
+Add `./db/BOOK_DETAIL.json` file:
 
 ```json
 {
-  "id": 20,
+  "id": 10,
   "title": "Robinson Crusoe",
   "author": "Daniel Defoe",
   "pages": 250
@@ -184,7 +202,7 @@ amServer(serverConfigOptions);
   <tr>
     <td><b>database</b><br><small><em>(optional)</em></small></td>
     <td><code>String</code></td>
-    <td>Directory name or path to directory in wich are stored json data files with responses.<br>Example: <code>"db"</code></td>
+    <td>Directory name or path to directory in wich are stored JSON data files with responses.<br>Example: <code>"./db"</code></td>
     <td>"database"</td>
   </tr>
   <tr>
@@ -236,24 +254,6 @@ amServer(serverConfigOptions);
     <td>null</td>
   </tr>
 </table>
-
-## TODO
-
-**Features**
-
-- include routes via require in config
-- custom prefix per route - override the global prefix
-- standard error response data overrides
-- watch for changes routes/server
-- comandline params: port, database folder (APIs for different projects)
-
-**Develop**
-
-- ES modules
-
-**Fix**
-
-- callback method can't receive POST method's body params
 
 ## License
 
