@@ -2,7 +2,7 @@
 
 Node server for simple rest API mockup with JSON format responses. Just define couple of routes with response data and start the server. Server will listen on default port 9933.
 
-API Mockup Server may be usefull during application development when for example back-end part is not ready yet and you want to work separately on front-end with mocked data, or you have a fully functional back-end part but you want to mockup only some of your rest APIs in order to simulate a problematic situation, bugs, edge cases, error responses, etc...
+API Mockup Server may be useful during application development when for example back-end part is not ready yet and you want to work separately on front-end with mocked data, or you have a fully functional back-end part but you want to mockup only some of your rest APIs in order to simulate a problematic situation, bugs, edge cases, error responses, etc...
 
 ## Installation
 
@@ -81,9 +81,9 @@ Now, you can make 3 requests:
 
 In bigger projects you don't wont to store all your routes and responses in one file. You can configure routes in separate file using `routes` config param and responses in `database` config param providing path to folder containing JSON files with response data.
 
-If you want to mockup only some of rest APIs you can use API Mockup Server as a mockup layer between your running back-end server and frontend application. In this scenario you have to configure proxy server target with runnig back-end. If you use more then one target, API Mockup Server will ask you to choose one target via CLI interface on server start.
+If you want to mockup only some of rest APIs you can use API Mockup Server as a mockup layer between your running back-end server and frontend application. In this scenario you have to configure proxy server target with running back-end. If you use more then one target, API Mockup Server will ask you to choose one target via CLI interface on server start.
 
-Note: You have to restart the server when you make changes in configuration files _(server setup and routes config)_ while server is runnig _(except of JSON data files in database folder, which are loaded dynamicaly during request processing)_.
+Note: You have to restart the server when you make changes in configuration files _(server setup and routes config)_ while server is running _(except of JSON data files in database folder, which are loaded dynamically during request processing)_.
 
 Updated `server.js` file:
 
@@ -97,7 +97,7 @@ amServer({
   database: './db', // path to directory with JSON files with response data
   prefix: '/api/v1',
   encoding: 'utf8',
-  delay: { min: 500, max: 2500 }, // delay mocked responses in miliseconds
+  delay: { min: 500, max: 2500 }, // delay mocked responses in milliseconds
   proxy: {
     server: [
       'http://localhost:3000',
@@ -138,7 +138,7 @@ module.exports = [
     method: 'GET',
     status: 200,
     applyIf: (req, params) => {
-      // conditionaly mocked if request URL param id = 10
+      // conditionally mocked if request URL param id = 10
       return params.id === '10';
     },
   },
@@ -225,7 +225,7 @@ amServer(serverConfigOptions);
   <tr>
     <td><b>database</b><br><small><em>(optional)</em></small></td>
     <td><code>String</code></td>
-    <td>Directory name or path to directory in wich are stored JSON data files with responses.<br>Example: <code>"./db"</code>
+    <td>Directory name or path to directory in which are stored JSON data files with responses.<br>Example: <code>"./db"</code>
     </td>
     <td><code>"database"</code></td>
   </tr>
@@ -265,7 +265,7 @@ amServer(serverConfigOptions);
   <tr>
     <td><b>proxy</b><br><small><em>(optional)</em></small></td>
     <td><code>Object</code></td>
-    <td>Proxy server configuration. Undefined or not active routes will be redirected to proxy target. If server is defined as an array, on the start the interactive CLI will ask you to choose from given list of server adresses.
+    <td>Proxy server configuration. Undefined or not active routes will be redirected to proxy target. If server is defined as an array, on the start the interactive CLI will ask you to choose from given list of server addresses.
       <br>Example: <code>{ server: "http://localhost:3000" }</code>
       <br>Example: 
 <pre>

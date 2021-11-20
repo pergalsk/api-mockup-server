@@ -6,7 +6,7 @@
 - custom prefix per route - override the global prefix
 - standard error response data overrides
 - watch for changes routes/server
-- comandline params: port, database folder (APIs for different projects)
+- command-line params: port, database folder (APIs for different projects)
 
 **Dev tools**
 
