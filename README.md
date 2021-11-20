@@ -73,9 +73,9 @@ node server.js
 
 Now, you can make 3 requests:
 
-- GET `http://localhost:9933/api/books/all` - server will response with HTTP status 200 and return static data with books list
-- GET `http://localhost:9933/api/books/7` - server will response with HTTP status 200 and return static data with book detail _(regardless of provided id, in this case 7)_
-- POST `http://localhost:9933/api/authors` - server will response with HTTP status 400 and return static data with error message _(regardless of provided POST request data)_
+- GET http://localhost:9933/api/books/all - server will response with HTTP status 200 and return static data with books list
+- GET http://localhost:9933/api/books/7 - server will response with HTTP status 200 and return static data with book detail _(regardless of provided id, in this case 7)_
+- POST http://localhost:9933/api/authors - server will response with HTTP status 400 and return static data with error message _(regardless of provided POST request data)_
 
 ### Advanced server configuration
 
@@ -253,7 +253,7 @@ amServer(serverConfigOptions);
   <tr>
     <td><b>delay</b><br><small><em>(optional)</em></small></td>
     <td><code>Object</code></td>
-    <td>Mocked response delay. Random delay will be generated between <code>min</code> and <code>max</code> values in miliseconds.
+    <td>Mocked response delay. Random delay will be generated between <code>min</code> and <code>max</code> values in milliseconds. If not set response will by served with no delay.
       <br>Example: <code>{ min: 500, max: 2500 }</code>
       <p>
         <br>If you want to define exact response time set <code>min</code> and <code>max</code> params to the same value.
