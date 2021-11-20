@@ -206,33 +206,6 @@ amServer(serverConfigOptions);
     <td><code>9933</code></td>
   </tr>
   <tr>
-    <td><b>routes</b><br><small><em>(mandatory)</em></small></td>
-    <td><code>String | Array</code></td>
-    <td>Definitions of API routes. It could be array or path to definition file.
-      <br>Example: <code>"./routes.js"</code>
-      <br>Example: 
-<pre>
-[
-  {
-    active: true,
-    path: '/movies',
-    method: 'GET',
-    status: 200,
-    key: 'MOVIES_ALL'
-  },
-  {
-    active: false,
-    path: '/movies/:movieId',
-    method: 'DELETE',
-    status: 400,
-    key: 'DELETE_MOVIE'
-  }
-]
-</pre>
-    </td>
-    <td><code>[]</code></td>
-  </tr>
-  <tr>
     <td><b>database</b><br><small><em>(optional)</em></small></td>
     <td><code>String</code></td>
     <td>Directory name or path to directory in which are stored JSON data files with responses.<br>Example: <code>"./db"</code>
@@ -272,6 +245,34 @@ amServer(serverConfigOptions);
     </td>
     <td><code>{ min: 0, max: 0}</code></td>
   </tr>
+    <tr>
+    <td><b>routes</b><br><small><em>(mandatory)</em></small></td>
+    <td><code>String | Array</code></td>
+    <td>Definitions of API routes. It could be array or path to definition file.
+      <br>Example: <code>"./routes.js"</code>
+      <br>Example: 
+<pre>
+[
+  {
+    active: true,
+    path: '/movies',
+    method: 'GET',
+    status: 200,
+    key: 'MOVIES_ALL'
+  },
+  {
+    active: false,
+    path: '/movies/:movieId',
+    method: 'DELETE',
+    status: 400,
+    key: 'DELETE_MOVIE'
+  }
+]
+</pre>
+    </td>
+    <td><code>[]</code></td>
+  </tr>
+
   <tr>
     <td><b>proxy</b><br><small><em>(optional)</em></small></td>
     <td><code>Object</code></td>
