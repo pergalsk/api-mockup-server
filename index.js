@@ -19,14 +19,14 @@ async function amServer(options = {}) {
     app.use(corsMiddleware());
   }
 
-  // use generated http proxy middleware
-  app.use(await proxy.getProxy(serverOptions));
-
   // use JSON middleware
   app.use(express.json());
 
   // use encode URLs middleware
   app.use(express.urlencoded({ extended: true }));
+
+  // use generated http proxy middleware
+  app.use(await proxy.getProxy(serverOptions));
 
   // use generated router middleware
   app.use(prefix, routing.getRouter(serverOptions));
