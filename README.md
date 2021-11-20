@@ -85,7 +85,17 @@ If you want to mockup only some of rest APIs you can use API Mockup Server as a 
 
 Note: You have to restart the server when you make changes in configuration files _(server setup and routes config)_ while server is running _(except of JSON data files in database folder, which are loaded dynamically during request processing)_.
 
-Updated `server.js` file:
+```
+FILE STRUCTURE:
+
+/db                    <- database directory
+  /BOOKS_ALL.json      <- response data file
+  /BOOK_DETAIL.json    <- response data file
+paths.js               <- routes definitions
+server.js              <- main server file
+```
+
+Main file with server configuration `./server.js`:
 
 ```javascript
 // server.js
