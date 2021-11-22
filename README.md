@@ -79,7 +79,7 @@ Now, you can make 3 requests:
 
 ### Advanced server configuration
 
-In bigger projects you don't wont to store all your routes and responses in one file. You can configure routes in separate file using `routes` config param and responses in `database` config param providing path to folder containing JSON files with response data.
+In bigger projects you don't want to store all your routes and responses in one file. You can configure routes in separate file using `routes` config param and responses in `database` config param providing path to folder containing JSON files with response data.
 
 If you want to mockup only some of rest APIs you can use API Mockup Server as a mockup layer between your running back-end server and frontend application. In this scenario you have to configure proxy server target with running back-end. If you use more then one target, API Mockup Server will ask you to choose one target via CLI interface on server start.
 
