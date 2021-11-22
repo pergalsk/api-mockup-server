@@ -44,7 +44,7 @@
   ],
   "WARNING_INVALID_METHOD": "WARNING: Invalid method (%method%) found in route config item.",
   "WARNING_MISSING_ROUTE_DEFINITIONS_SERVER_ACTIVE": [
-    "No active routes definitions.",
+    "No active routes defined.",
     "All requests will be redirected to proxy server."
   ],
   "WARNING_MISSING_ROUTE_DEFINITIONS": [
