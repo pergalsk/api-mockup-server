@@ -14,4 +14,5 @@
 
 **Fix**
 
--
+- Use of "Response potentialy modified." message is senseless.
+- Cached responses vs message "No need to server restart."
