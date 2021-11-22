@@ -14,5 +14,6 @@
 
 **Fix**
 
-- Use of "Response potentialy modified." message is senseless.
+- x-www-form-urlencoded issue: https://github.com/chimurai/http-proxy-middleware/issues/320
+- Use of "Response potentially modified." message is senseless.
 - Cached responses vs message "No need to server restart."
