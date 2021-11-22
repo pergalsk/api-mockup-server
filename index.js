@@ -32,7 +32,7 @@ async function amServer(options = {}) {
   app.use(prefix, routing.getRouter(serverOptions));
 
   // start server listening
-  app.listen(port, log.serverListen(serverOptions /* routesList */));
+  app.listen(port, log.serverListen(serverOptions));
 
   // watch for changes
   watcher.watch({ routes, database });
