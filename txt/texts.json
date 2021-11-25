@@ -53,9 +53,9 @@
     "or provide path to routes config JS file.",
     "For example config file in { routes: \"./routes.js\" } could contain:",
     "module.exports = [",
-    "  { active: true, key: 'PRODUCT_CREATE', method: 'POST', path: '/product', status: '200' },",
-    "  { active: true, key: 'PRODUCT_DETAIL', method: 'GET', path: '/product/:id', status: '200' },",
-    "  { active: true, key: 'PRODUCT_DELETE', method: 'DELETE', path: '/product/:id', status: '400' }",
+    "  { active: true, key: 'PRODUCT_CREATE', method: 'POST', path: '/product', status: 200 },",
+    "  { active: true, key: 'PRODUCT_DETAIL', method: 'GET', path: '/product/:id', status: 200 },",
+    "  { active: true, key: 'PRODUCT_DELETE', method: 'DELETE', path: '/product/:id', status: 400 }",
     "];",
     "Look into documentation for more details."
   ],
