@@ -10,9 +10,7 @@ API Mockup Server may be useful during application development when for example 
 npm install api-mockup-server --save
 ```
 
-## Usage
-
-### Quick start
+## Quick start
 
 Create `server.js` file:
 
@@ -77,9 +75,9 @@ Now, you can make 3 requests:
 - GET http://localhost:9933/api/books/7 - server will response with HTTP status 200 and return static data with book detail _(regardless of provided id, in this case 7)_
 - POST http://localhost:9933/api/authors - server will response with HTTP status 400 and return static data with error message _(regardless of provided POST request data)_
 
-### Advanced server configuration
+## Advanced server configuration
 
-In bigger projects you don't want to store all your routes and responses in one file. You can configure routes in separate file using `routes` config param and responses in `database` config param providing path to folder containing JSON files with response data.
+In bigger projects you don't want to store all of your routes and responses in one file. You can configure routes in separate file using `routes` param and responses in `database` param providing path to folder containing JSON files with response data.
 
 If you want to mockup only some of rest APIs you can use API Mockup Server as a mockup layer between your running back-end server and frontend application. In this scenario you have to configure proxy server target with running back-end. If you use more then one target, API Mockup Server will ask you to choose one target via CLI interface on server start.
 
@@ -107,13 +105,12 @@ amServer({
   database: './db', // path to directory with JSON files with response data
   prefix: '/api/v1',
   encoding: 'utf8',
-  delay: { min: 500, max: 2500 }, // delay mocked responses in milliseconds
+  delay: {
+    min: 500,
+    max: 2500,
+  }, // delay mocked responses in milliseconds
   proxy: {
-    server: [
-      'http://localhost:3000',
-      'http://some.server.example',
-      'http://another.server.example',
-    ],
+    server: 'http://another.server.example',
   },
 });
 ```
@@ -147,7 +144,7 @@ module.exports = [
     path: '/books/:id',
     method: 'GET',
     status: 200,
-    applyIf: (req, params) => {
+    applyIf: (req, params, data) => {
       // conditionally mocked if request URL param id = 10
       return params.id === '10';
     },
@@ -201,32 +198,32 @@ amServer(serverConfigOptions);
   <tr><th>Parameter</th><th>Type</th><th>Description</th><th>Default</th></tr>
   <tr>
     <td><b>port</b><br><small><em>(optional)</em></small></td>
-    <td><code>Number</code></td>
+    <td><code>number</code></td>
     <td>The port on which mock server will listen.</td>
     <td><code>9933</code></td>
   </tr>
   <tr>
     <td><b>database</b><br><small><em>(optional)</em></small></td>
-    <td><code>String</code></td>
+    <td><code>string</code></td>
     <td>Directory name or path to directory in which are stored JSON data files with responses.<br>Example: <code>"./db"</code>
     </td>
     <td><code>"database"</code></td>
   </tr>
   <tr>
     <td><b>prefix</b><br><small><em>(optional)</em></small></td>
-    <td><code>String</code></td>
+    <td><code>string</code></td>
     <td>Api route prefix. <br>Example: <code>"/api/v1"</code></td>
     <td><code>""</code></td>
   </tr>
   <tr>
     <td><b>encoding</b><br><small><em>(optional)</em></small></td>
-    <td><code>String</code></td>
+    <td><code>string</code></td>
     <td>Response text encoding.</td>
     <td><code>"utf8"</code></td>
   </tr>
   <tr>
     <td><b>cors</b><br><em><small>(optional)</small></em></td>
-    <td><code>Boolean</code></td>
+    <td><code>boolean</code></td>
     <td>
       <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS">Cross-Origin Resource Sharing</a> policy.
       <br>Set to <code>false</code> if you don't wont it.
@@ -247,8 +244,10 @@ amServer(serverConfigOptions);
   </tr>
     <tr>
     <td><b>routes</b><br><small><em>(mandatory)</em></small></td>
-    <td><code>String | Array</code></td>
-    <td>Definitions of API routes. It could be array or path to definition file.
+    <td><code>string | Array</code></td>
+    <td>
+      Definitions of API routes. It could be array or path to definition file. 
+      <a href="#routes-configuration-options">More config options below.</a>
       <br>Example: <code>"./routes.js"</code>
       <br>Example: 
 <pre>
@@ -277,8 +276,10 @@ amServer(serverConfigOptions);
     <td><b>proxy</b><br><small><em>(optional)</em></small></td>
     <td><code>Object</code></td>
     <td>Proxy server configuration. Undefined or not active routes will be redirected to proxy target. If server is defined as an array, on the start the interactive CLI will ask you to choose from given list of server addresses.
-      <br>Example: <code>{ server: "http://localhost:3000" }</code>
-      <br>Example: 
+      <br>Examples: 
+<pre>{ 
+  server: "http://localhost:3000" 
+}</pre>
 <pre>
 {
   server: [
@@ -291,6 +292,187 @@ amServer(serverConfigOptions);
     </td>
     <td><code>null</code></td>
   </tr>
+</table>
+
+## Routes configuration options
+
+You can specify options in separate file and include it in server config.
+
+Example
+
+```javascript
+module.exports = [
+  {
+    active: true,
+    path: '/books/all',
+    method: 'GET',
+    status: 200,
+    data: [
+      { id: 10, title: 'Robinson Crusoe' },
+      { id: 20, title: 'Don Quixote' }
+    ]
+  },
+  {
+    active: true,
+    key: 'BOOK_UPDATE',
+    path: '/books/:bookId',
+    method: 'PUT',
+    status: 200,
+    applyIf: (req, params, data) => { // use when proxy is active
+      // params - parameters from route path
+      // data - parameters from request payload (PUT/POST)
+      return params.bookId === '10' && data.bookGenre === 'novel';
+    }
+  },
+  {
+    active: false, // this route is disabled
+    key: 'SEARCH_AUTHORS'
+    path: '/authors',
+    method: 'POST',
+    status: 400
+  }
+];
+```
+
+<table>
+  <tr><th>Parameter</th><th>Type</th><th>Description</th><th>Default</th></tr>
+
+  <tr>
+    <td><b>active</b><br><small><em>(optional)</em></small></td>
+    <td><code>boolean</code></td>
+    <td>ON/OFF switch. If it's not set as <code>true</code> rule will be omitted.</td>
+    <td><code>false</code></td>
+  </tr>
+
+  <tr>
+    <td><b>path</b><br><small><em>(mandatory)</em></small></td>
+    <td><code>string</code></td>
+    <td>
+      Route path. See more details in <a href="https://expressjs.com/en/4x/api.html#req">ExpressJS 4.x Request documentation</a>.
+      <br>Examples: 
+      <br><code>"/movies/:movieId"</code>
+      <br><code>"/movies/:id/detail/:action?"</code>
+      <br><code>"/comments/:user/:year/:month"</code>
+    </td>
+    <td><code>""</code></td>
+  </tr>
+
+  <tr>
+    <td><b>method</b><br><small><em>(optional)</em></small></td>
+    <td><code>string</code></td>
+    <td>HTTP method. Available methods: <code>GET</code>, <code>POST</code>, <code>PUT</code>, <code>DELETE</code>, <code>HEAD</code>, <code>CONNECT</code>, <code>OPTIONS</code>, <code>TRACE</code>, <code>PATCH</code>
+    <br>Example: <code>"POST"</code></td>
+    <td><code>"GET"</code></td>
+  </tr>
+
+  <tr>
+    <td><b>status</b><br><small><em>(optional)</em></small></td>
+    <td><code>number</code></td>
+    <td>HTTP response status. <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Status">See list of statuses</a> on MDN Web Docs.</td>
+    <td><code>200</code></td>
+  </tr>
+
+  <tr>
+    <td><b>data</b><br><em><small>(optional)</small></em></td>
+    <td><code>Object</code></td>
+    <td>
+      Response data. If you have bigger amount of data it could be replaced with <code>key</code> option (bellow)<br>
+      Example:
+<pre>
+data: [
+  { id: 10, title: 'Robinson Crusoe' },
+  { id: 20, title: 'Don Quixote' }
+]
+</pre>      
+    </td>
+    <td><code>null</code></td>
+  </tr>
+
+  <tr>
+    <td><b>key</b><br><small><em>(optional)</em></small></td>
+    <td><code>string</code></td>
+    <td>Param will be used for searching a file with response data (in JSON format) in defined database folder. You could store response data in a folder defined by <code>database</code> param with filename used as <code>key</code> with <code>.json</code> extension. Server will find that file and return content as JSON response. You can define different data (in separate files) for each HTTP status code using extension prefix. API Mockup Server uses <code>key</code> also as an ID in console log for identifying which route was handled/intercepted or which has an error.
+      <br><br>Examples:
+<pre>
+"BOOKS_LIST"
+</pre>
+<pre>
+"BOOK_REMOVE"
+</pre>
+<pre>
+"AUTHOR_EDIT"
+</pre>
+      <br>Files based on examples above. They should be stored in database folder:
+<pre>
+// response data with list of books (applies for any HTTP status)
+BOOKS_LIST.json
+
+// response data for book delete (applies for any HTTP status)
+BOOK_REMOVE.json
+
+// response data with book update (for error HTTP status 400)
+AUTHOR_EDIT.202.json
+// response data with book update (for error HTTP status 202)
+AUTHOR_EDIT.400.json
+// book update (for error HTTP status 404)
+AUTHOR_EDIT.404.json
+// book update (for error HTTP status 500)
+AUTHOR_EDIT.500.json
+// response data for all other statuses
+AUTHOR_EDIT.json
+
+</pre></td>
+    <td><code>""</code></td>
+  </tr>
+
+  <tr>
+    <td><b>applyIf</b><br><small><em>(optional)</em></small></td>
+    <td><code>Function</code></td>
+    <td>
+      Decide whether route should be mocked or not. Return <code>true</code> if route should not be proxyied but returned as defined JSON data mockup. It's useful when you want to proxy route only if some conditions are met. <code>applyIf</code> has lower priority than param <code>active</code>. 
+      <br> Function params:
+      <ul>
+        <li><code>req</code> - ExpressJS request object</li>
+        <li><code>params</code> - request URL params</li>
+        <li><code>body</code> - PUT/POST request payload data</li>
+      </ul>
+      Return value (boolean):
+      <ul>
+        <li><code>true</code> - if you want your route to be handled by mockup server</li>
+        <li><code>false</code> - if you want to pass request to proxy target (if configured - otherwise empty response will be returned)</li>
+      </ul>
+      <br>Example:
+<pre>
+  applyIf: (req, params, body) => {
+    return params.bookId === '100';
+  }
+</pre>
+    </td>
+    <td><code>null</code></td>
+  </tr>
+
+  <tr>
+    <td><b>callback</b><br><small><em>(optional)</em></small></td>
+    <td><code>Function</code></td>
+    <td>Callback method for response manipulation. It should always return data.
+      <br> Function params:
+      <ul>
+        <li><code>req</code> - ExpressJS request object</li>
+        <li><code>res</code> - ExpressJS response object</li>
+        <li><code>data</code> - returned data (from mock or from proxy target)</li>
+      </ul>
+      <br>Example:
+<pre>
+  callback: (req, res, data) => {
+    // modify data and return back
+    data.time = new Date();
+    return data;
+  }
+</pre>
+    </td>
+    <td><code>null</code></td>
+  </tr>
+
 </table>
 
 ## License
