@@ -86,11 +86,12 @@ Note: You have to restart the server when you make changes in configuration file
 ```
 FILE STRUCTURE:
 
-/db                    <- database directory
-  /BOOKS_ALL.json      <- response data file
-  /BOOK_DETAIL.json    <- response data file
-paths.js               <- routes definitions
-server.js              <- main server file
+/db                        <- database directory
+  /BOOKS_ALL.json          <- response data file for all HTTP statuses
+  /BOOK_DETAIL.json        <- response data file for statuses other than 400
+  /BOOK_DETAIL.400.json    <- response data file for HTTP status 400
+paths.js                   <- routes definitions
+server.js                  <- main server file
 ```
 
 Main file with server configuration `./server.js`:
@@ -171,6 +172,15 @@ Add `./db/BOOK_DETAIL.json` file:
   "title": "Robinson Crusoe",
   "author": "Daniel Defoe",
   "pages": 250
+}
+```
+
+Add `./db/BOOK_DETAIL.400.json` file:
+
+```json
+{
+  "errorCode": 15,
+  "errorMsg": "Book ID has wrong format."
 }
 ```
 
@@ -296,9 +306,9 @@ amServer(serverConfigOptions);
 
 ## Routes configuration options
 
-You can specify options in separate file and include it in server config.
+You can specify routes in separate file and include it in server config.
 
-Example
+Example:
 
 ```javascript
 module.exports = [
@@ -309,8 +319,8 @@ module.exports = [
     status: 200,
     data: [
       { id: 10, title: 'Robinson Crusoe' },
-      { id: 20, title: 'Don Quixote' }
-    ]
+      { id: 20, title: 'Don Quixote' },
+    ],
   },
   {
     active: true,
@@ -318,19 +328,20 @@ module.exports = [
     path: '/books/:bookId',
     method: 'PUT',
     status: 200,
-    applyIf: (req, params, data) => { // use when proxy is active
+    applyIf: (req, params, data) => {
+      // use when proxy is active
       // params - parameters from route path
       // data - parameters from request payload (PUT/POST)
       return params.bookId === '10' && data.bookGenre === 'novel';
-    }
+    },
   },
   {
     active: false, // this route is disabled
-    key: 'SEARCH_AUTHORS'
+    key: 'SEARCH_AUTHORS',
     path: '/authors',
     method: 'POST',
-    status: 400
-  }
+    status: 400,
+  },
 ];
 ```
 
@@ -419,10 +430,11 @@ AUTHOR_EDIT.404.json
 // book update (for error HTTP status 500)
 AUTHOR_EDIT.500.json
 // response data for all other statuses
-AUTHOR_EDIT.json
+AUTHOR_EDIT.json</pre>
 
-</pre></td>
-    <td><code>""</code></td>
+</td>
+<td><code>""</code></td>
+
   </tr>
 
   <tr>
@@ -430,7 +442,7 @@ AUTHOR_EDIT.json
     <td><code>Function</code></td>
     <td>
       Decide whether route should be mocked or not. Return <code>true</code> if route should not be proxyied but returned as defined JSON data mockup. It's useful when you want to proxy route only if some conditions are met. <code>applyIf</code> has lower priority than param <code>active</code>. 
-      <br> Function params:
+      <br><br>Function params:
       <ul>
         <li><code>req</code> - ExpressJS request object</li>
         <li><code>params</code> - request URL params</li>
@@ -443,9 +455,9 @@ AUTHOR_EDIT.json
       </ul>
       <br>Example:
 <pre>
-  applyIf: (req, params, body) => {
-    return params.bookId === '100';
-  }
+applyIf: (req, params, body) => {
+  return params.bookId === '100';
+}
 </pre>
     </td>
     <td><code>null</code></td>
@@ -461,13 +473,13 @@ AUTHOR_EDIT.json
         <li><code>res</code> - ExpressJS response object</li>
         <li><code>data</code> - returned data (from mock or from proxy target)</li>
       </ul>
-      <br>Example:
+      Example:
 <pre>
-  callback: (req, res, data) => {
-    // modify data and return back
-    data.time = new Date();
-    return data;
-  }
+callback: (req, res, data) => {
+  // modify data and return back
+  data.time = new Date();
+  return data;
+}
 </pre>
     </td>
     <td><code>null</code></td>
