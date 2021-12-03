@@ -87,9 +87,9 @@ Note: You have to restart the server when you make changes in configuration file
 FILE STRUCTURE:
 
 /db                        <- database directory
-  /BOOKS_ALL.json          <- response data file for all HTTP statuses
-  /BOOK_DETAIL.json        <- response data file for statuses other than 400
-  /BOOK_DETAIL.400.json    <- response data file for HTTP status 400
+  /BOOKS_ALL.json          <- response data file (all HTTP statuses)
+  /BOOK_DETAIL.json        <- response data file (all HTTP statuses other than 400)
+  /BOOK_DETAIL.400.json    <- response data file (only HTTP status 400)
 paths.js                   <- routes definitions
 server.js                  <- main server file
 ```
@@ -107,9 +107,9 @@ amServer({
   prefix: '/api/v1',
   encoding: 'utf8',
   delay: {
-    min: 500,
+    min: 500, // delay mocked responses in milliseconds
     max: 2500,
-  }, // delay mocked responses in milliseconds
+  },
   proxy: {
     server: 'http://another.server.example',
   },
@@ -402,7 +402,7 @@ data: [
   <tr>
     <td><b>key</b><br><small><em>(optional)</em></small></td>
     <td><code>string</code></td>
-    <td>Param will be used for searching a file with response data (in JSON format) in defined database folder. You could store response data in a folder defined by <code>database</code> param with filename used as <code>key</code> with <code>.json</code> extension. Server will find that file and return content as JSON response. You can define different data (in separate files) for each HTTP status code using extension prefix. API Mockup Server uses <code>key</code> also as an ID in console log for identifying which route was handled/intercepted or which has an error.
+    <td>Param will be used for searching for a file with response data (in JSON format) in defined database folder. You could store response data in a folder defined by <code>database</code> param with filename used as <code>key</code> with <code>.json</code> extension. Server will find that file and return content as JSON response. You can define different data (in separate files) for each HTTP status code using extension prefix. API Mockup Server uses <code>key</code> also as an ID in console log for identifying which route was handled/intercepted or which has an error.
       <br><br>Examples:
 <pre>
 "BOOKS_LIST"
