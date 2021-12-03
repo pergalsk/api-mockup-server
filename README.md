@@ -87,9 +87,9 @@ Note: You have to restart the server when you make changes in configuration file
 FILE STRUCTURE:
 
 /db                        <- database directory
-  /BOOKS_ALL.json          <- response data file (all HTTP statuses)
-  /BOOK_DETAIL.json        <- response data file (all HTTP statuses other than 400)
-  /BOOK_DETAIL.400.json    <- response data file (only HTTP status 400)
+  /BOOKS_ALL.json          <- response data file (all statuses)
+  /BOOK_DETAIL.json        <- response data file (statuses !== 400)
+  /BOOK_DETAIL.400.json    <- response data file (HTTP status 400)
 paths.js                   <- routes definitions
 server.js                  <- main server file
 ```
@@ -103,7 +103,7 @@ const amServer = require('api-mockup-server');
 amServer({
   port: 9933,
   routes: './paths.js', // path to file with routes
-  database: './db', // path to directory with JSON files with response data
+  database: './db', // path to directory with data files
   prefix: '/api/v1',
   encoding: 'utf8',
   delay: {
@@ -111,7 +111,7 @@ amServer({
     max: 2500,
   },
   proxy: {
-    server: 'http://another.server.example',
+    server: 'https://another.server.example',
   },
 });
 ```
@@ -125,7 +125,7 @@ Add `./paths.js` file in the same directory:
 module.exports = [
   {
     active: true,
-    key: 'BOOKS_ALL', // key for response data stored in ./db/POSTS_ALL.json
+    key: 'BOOKS_ALL', // response data file: ./db/POSTS_ALL.json
     path: '/books/all',
     method: 'GET',
     status: 200,
@@ -141,7 +141,7 @@ module.exports = [
   },
   {
     active: true,
-    key: 'BOOK_DETAIL', // key for response data stored in ./db/BOOK_DETAIL.json
+    key: 'BOOK_DETAIL', // response data file: ./db/BOOK_DETAIL.json
     path: '/books/:id',
     method: 'GET',
     status: 200,
@@ -243,7 +243,7 @@ amServer(serverConfigOptions);
   <tr>
     <td><b>delay</b><br><small><em>(optional)</em></small></td>
     <td><code>Object</code></td>
-    <td>Mocked response delay. Random delay will be generated between <code>min</code> and <code>max</code> values in milliseconds. If not set response will by served with no delay.
+    <td>Mocked response delay. Random delay will be generated between <code>min</code> and <code>max</code> values in milliseconds. If not set response will by served with additional delay.
       <br>Example: <code>{ min: 500, max: 2500 }</code>
       <p>
         <br>If you want to define exact response time set <code>min</code> and <code>max</code> params to the same value.
@@ -288,14 +288,14 @@ amServer(serverConfigOptions);
     <td>Proxy server configuration. Undefined or not active routes will be redirected to proxy target. If server is defined as an array, on the start the interactive CLI will ask you to choose from given list of server addresses.
       <br>Examples: 
 <pre>{ 
-  server: "http://localhost:3000" 
+  server: "http://localhost:3000"
 }</pre>
 <pre>
 {
   server: [
     'http://localhost:3000',
-    'http://some.server.example',
-    'http://another.server.example',
+    'http://api.server.example',
+    'http://api2.server.example'
   ]
 }
 </pre>
@@ -329,7 +329,6 @@ module.exports = [
     method: 'PUT',
     status: 200,
     applyIf: (req, params, data) => {
-      // use when proxy is active
       // params - parameters from route path
       // data - parameters from request payload (PUT/POST)
       return params.bookId === '10' && data.bookGenre === 'novel';
@@ -362,8 +361,8 @@ module.exports = [
       Route path. See more details in <a href="https://expressjs.com/en/4x/api.html#req">ExpressJS 4.x Request documentation</a>.
       <br>Examples: 
       <br><code>"/movies/:movieId"</code>
-      <br><code>"/movies/:id/detail/:action?"</code>
-      <br><code>"/comments/:user/:year/:month"</code>
+      <br><code>"/movies/list/:genre?"</code>
+      <br><code>"/comments/:year/:month"</code>
     </td>
     <td><code>""</code></td>
   </tr>
@@ -390,10 +389,11 @@ module.exports = [
       Response data. If you have bigger amount of data it could be replaced with <code>key</code> option (bellow)<br>
       Example:
 <pre>
-data: [
-  { id: 10, title: 'Robinson Crusoe' },
-  { id: 20, title: 'Don Quixote' }
-]
+data: { 
+  id: 10, 
+  title: 'Robinson Crusoe',
+  genre: 'Adventure' 
+}
 </pre>      
     </td>
     <td><code>null</code></td>
@@ -415,22 +415,13 @@ data: [
 </pre>
       <br>Files based on examples above. They should be stored in database folder:
 <pre>
-// response data with list of books (applies for any HTTP status)
 BOOKS_LIST.json
-
-// response data for book delete (applies for any HTTP status)
 BOOK_REMOVE.json
-
-// response data with book update (for error HTTP status 400)
+AUTHOR_EDIT.json
 AUTHOR_EDIT.202.json
-// response data with book update (for error HTTP status 202)
 AUTHOR_EDIT.400.json
-// book update (for error HTTP status 404)
-AUTHOR_EDIT.404.json
-// book update (for error HTTP status 500)
 AUTHOR_EDIT.500.json
-// response data for all other statuses
-AUTHOR_EDIT.json</pre>
+</pre>
 
 </td>
 <td><code>""</code></td>
