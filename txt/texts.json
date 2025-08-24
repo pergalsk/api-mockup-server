@@ -4,29 +4,18 @@
   "EMPTY_RESPONSE": "(empty response)",
   "ERROR_IN_PROCESSING_JSON_DATA": "Error in processing modified JSON data. Returning unmodified response.",
   "ERROR_NO_PATH_FOUND_IN_CONFIG": "ERROR: No path found in route config item.",
+  "ERROR_WHILE_CLEARING_REQUIRE_CACHE": "ERROR: Clearing file cache went wrong for path: \"%path%\"",
   "ERROR_WHILE_READING_JSON_FILE": "ERROR: Wrong format in file with response data for key: \"%key%\"",
   "EXIT": "Exit",
   "FILE_OR_DIR_ADDED": "File \"%path%\" has been added.",
-  "FILE_OR_DIR_ADDED_DATABASE": [
-    "Database file \"%path%\" has been added.",
-    "No need to server restart."
-  ],
-  "FILE_OR_DIR_ADDED_ROUTES": [
-    "Routes file \"%path%\" has been added.",
-    "Please restart the server for the changes to take effect."
-  ],
+  "FILE_OR_DIR_ADDED_DATABASE": ["Database file \"%path%\" has been added."],
+  "FILE_OR_DIR_ADDED_ROUTES": ["Routes file \"%path%\" has been added."],
   "FILE_OR_DIR_CHANGED": "File \"%path%\" has been changed.",
-  "FILE_OR_DIR_CHANGED_DATABASE": [
-    "Database file \"%path%\" has been changed.",
-    "No need to server restart."
-  ],
-  "FILE_OR_DIR_CHANGED_ROUTES": [
-    "Routes file \"%path%\" has been changed.",
-    "Please restart the server for the changes to take effect."
-  ],
+  "FILE_OR_DIR_CHANGED_DATABASE": ["Database file \"%path%\" has been changed."],
+  "FILE_OR_DIR_CHANGED_ROUTES": ["Routes file \"%path%\" has been changed."],
   "HANDLED_ROUTES": "Handled routes:",
   "NO_ROUTES_DEFINED": "No routes defined.",
-  "PROXY_CONFIGURED": "Proxy server configured. No active routes will be redirected.",
+  "PROXY_CONFIGURED": "Proxy server configured. Not active routes will be redirected.",
   "PROXY_LABEL": "Proxy:",
   "PROXY_NOT_CONFIGURED": "Proxy server was not configured. Serving only defined routes.",
   "PROXY_SERVER_AT": "Proxy server at ",

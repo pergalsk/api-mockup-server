@@ -25,17 +25,32 @@ async function amServer(options = {}) {
   // use encode URLs middleware
   app.use(express.urlencoded({ extended: true }));
 
+  // get proxy target from user selection
+  const target = await proxy.getProxyTarget(serverOptions.proxy);
+
   // use generated http proxy middleware
-  app.use(await proxy.getProxy(serverOptions));
+  let proxyMiddleware = proxy.getProxy(serverOptions, target);
+  app.use((...params) => {
+    proxyMiddleware(...params);
+  });
 
   // use generated router middleware
-  app.use(prefix, routing.getRouter(serverOptions));
+  let routerMiddleware = routing.getRouter(serverOptions);
+  app.use(prefix, (...params) => {
+    routerMiddleware(...params);
+  });
 
   // start server listening
   app.listen(port, log.serverListen(serverOptions));
 
   // watch for changes
-  watcher.watch({ routes, database });
+  watcher.watch({ routes, database }, () => {
+    // required files are cached in NodeJs -> clear cache
+    routing.clearRequireCache(serverOptions.routes);
+    // regerate middleware (files could be changed)
+    proxyMiddleware = proxy.getProxy(serverOptions, target);
+    routerMiddleware = routing.getRouter(serverOptions);
+  });
 }
 
 module.exports = amServer;

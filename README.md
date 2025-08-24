@@ -81,7 +81,7 @@ In bigger projects you don't want to store all of your routes and responses in o
 
 If you want to mockup only some of rest APIs you can use API Mockup Server as a mockup layer between your running back-end server and frontend application. In this scenario you have to configure proxy server target with running back-end. If you use more then one target, API Mockup Server will ask you to choose one target via CLI interface on server start.
 
-Note: You have to restart the server when you make changes in configuration files _(server setup and routes config)_ while server is running _(except of JSON data files in database folder, which are loaded dynamically during request processing)_.
+Note: You don't have to restart the server when you make changes in routes config _(if path is defined)_ or data files. API Mockup Server will automatically reflect new configuration while running.
 
 ```
 FILE STRUCTURE:
