@@ -38,7 +38,7 @@ const routes = [
     method: 'GET',
     status: 200,
     data: {
-      id: 20,
+      id: 10,
       title: 'Robinson Crusoe',
       author: 'Daniel Defoe',
       pages: 250,
@@ -130,23 +130,28 @@ module.exports = [
     method: 'GET',
     status: 200,
     callback: (req, res, data) => {
-      // modify returned data
+      // modify data
       const date = new Date();
       const timestamp = date.getTime();
-      return data.map((item) => {
+
+      const newData = data.map((item) => {
         item._t = timestamp;
         return item;
       });
+      // return modified data
+      return newData;
     },
   },
   {
     active: true,
     key: 'BOOK_DETAIL', // response data file: ./db/BOOK_DETAIL.json
+    prefix: '/api/v2',
     path: '/books/:id',
     method: 'GET',
     status: 200,
     applyIf: (req, params, data) => {
       // conditionally mocked if request URL param id = 10
+      // e.g.: /api/v2/books/10
       return params.id === '10';
     },
   },
@@ -337,6 +342,7 @@ module.exports = [
   {
     active: false, // this route is disabled
     key: 'SEARCH_AUTHORS',
+    prefix: '/v2',
     path: '/authors',
     method: 'POST',
     status: 400,
@@ -355,11 +361,19 @@ module.exports = [
   </tr>
 
   <tr>
+    <td><b>prefix</b><br><small><em>(optional)</em></small></td>
+    <td><code>string</code></td>
+    <td>Custom route prefix. It will override global prefix defined in server configuration
+    <br><br>Tip: If you have defined global prefix, but custom route should be without that prefix you can provide <code>prefix: ''</code> which will neutralize global prefix.</td>
+    <td><code>null</code></td>
+  </tr>
+
+  <tr>
     <td><b>path</b><br><small><em>(mandatory)</em></small></td>
     <td><code>string</code></td>
     <td>
       Route path. See more details in <a href="https://expressjs.com/en/4x/api.html#req">ExpressJS 4.x Request documentation</a>.
-      <br>Examples: 
+      <br><br>Examples: 
       <br><code>"/movies/:movieId"</code>
       <br><code>"/movies/list/:genre?"</code>
       <br><code>"/comments/:year/:month"</code>
@@ -371,7 +385,7 @@ module.exports = [
     <td><b>method</b><br><small><em>(optional)</em></small></td>
     <td><code>string</code></td>
     <td>HTTP method. Available methods: <code>GET</code>, <code>POST</code>, <code>PUT</code>, <code>DELETE</code>, <code>HEAD</code>, <code>CONNECT</code>, <code>OPTIONS</code>, <code>TRACE</code>, <code>PATCH</code>
-    <br>Example: <code>"POST"</code></td>
+    <br><br>Example: <code>"POST"</code></td>
     <td><code>"GET"</code></td>
   </tr>
 
@@ -386,8 +400,8 @@ module.exports = [
     <td><b>data</b><br><em><small>(optional)</small></em></td>
     <td><code>Object</code></td>
     <td>
-      Response data. If you have bigger amount of data it could be replaced with <code>key</code> option (bellow)<br>
-      Example:
+      Response data. If you have bigger amount of data it could be replaced with <code>key</code> option (bellow)
+      <br><br>Example:
 <pre>
 data: { 
   id: 10, 
@@ -444,7 +458,7 @@ AUTHOR_EDIT.500.json
         <li><code>true</code> - if you want your route to be handled by mockup server</li>
         <li><code>false</code> - if you want to pass request to proxy target (if configured - otherwise empty response will be returned)</li>
       </ul>
-      <br>Example:
+      <br><br>Example:
 <pre>
 applyIf: (req, params, body) => {
   return params.bookId === '100';

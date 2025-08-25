@@ -10,7 +10,7 @@ async function amServer(options = {}) {
   log.serverStart();
 
   const serverOptions = { ...defaultOptions.server, ...options };
-  const { port, prefix, routes, database, cors } = serverOptions;
+  const { port, routes, database, cors } = serverOptions;
 
   // create express application
   const app = express();
@@ -36,7 +36,7 @@ async function amServer(options = {}) {
 
   // use generated router middleware
   let routerMiddleware = routing.getRouter(serverOptions);
-  app.use(prefix, (...params) => {
+  app.use((...params) => {
     routerMiddleware(...params);
   });
 
