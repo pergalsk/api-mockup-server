@@ -129,7 +129,7 @@ module.exports = [
     path: '/books/all',
     method: 'GET',
     status: 200,
-    callback: (req, res, data) => {
+    callback: ({ params, query, body, data, req }) => {
       // modify data
       const date = new Date();
       const timestamp = date.getTime();
@@ -149,7 +149,7 @@ module.exports = [
     path: '/books/:id',
     method: 'GET',
     status: 200,
-    applyIf: (req, params, data) => {
+    applyIf: ({ params, query, body, req }) => {
       // conditionally mocked if request URL param id = 10
       // e.g.: /api/v2/books/10
       return params.id === '10';
@@ -333,10 +333,10 @@ module.exports = [
     path: '/books/:bookId',
     method: 'PUT',
     status: 200,
-    applyIf: (req, params, data) => {
+    applyIf: ({ params, query, body, req }) => {
       // params - parameters from route path
-      // data - parameters from request payload (PUT/POST)
-      return params.bookId === '10' && data.bookGenre === 'novel';
+      // body - parameters from request payload (PUT/POST)
+      return params.bookId === '10' && body.bookGenre === 'novel';
     },
   },
   {
@@ -447,20 +447,22 @@ AUTHOR_EDIT.500.json
     <td><code>Function</code></td>
     <td>
       Decide whether route should be mocked or not. Return <code>true</code> if route should not be proxyied but returned as defined JSON data mockup. It's useful when you want to proxy route only if some conditions are met. <code>applyIf</code> has lower priority than param <code>active</code>. 
-      <br><br>Function params:
+      <br><br>Function parameter is one object with properties:
       <ul>
-        <li><code>req</code> - ExpressJS request object</li>
         <li><code>params</code> - request URL params</li>
+        <li><code>query</code> - request URL query params (?param1=value1&param2=value2)</li>
         <li><code>body</code> - PUT/POST request payload data</li>
+        <li><code>req</code> - ExpressJS request object</li>
       </ul>
-      Return value (boolean):
+      Return value should be boolean:
       <ul>
         <li><code>true</code> - if you want your route to be handled by mockup server</li>
         <li><code>false</code> - if you want to pass request to proxy target (if configured - otherwise empty response will be returned)</li>
       </ul>
-      <br><br>Example:
+      <br>Example:
 <pre>
-applyIf: (req, params, body) => {
+applyIf: (props) => {
+  const { params, query, body, req } = props;
   return params.bookId === '100';
 }
 </pre>
@@ -472,15 +474,19 @@ applyIf: (req, params, body) => {
     <td><b>callback</b><br><small><em>(optional)</em></small></td>
     <td><code>Function</code></td>
     <td>Callback method for response manipulation. It should always return data.
-      <br> Function params:
-      <ul>
-        <li><code>req</code> - ExpressJS request object</li>
-        <li><code>res</code> - ExpressJS response object</li>
-        <li><code>data</code> - returned data (from mock or from proxy target)</li>
-      </ul>
-      Example:
+    <br><br>Function parameter is one object with properties:
+    <ul>
+      <li><code>params</code> - request URL params</li>
+      <li><code>query</code> - request URL query params (?param1=value1&param2=value2)</li>
+      <li><code>body</code> - PUT/POST request payload data</li>
+      <li><code>data</code> - returned data (from mock or from proxy target)</li>
+      <li><code>req</code> - ExpressJS request object</li>
+    </ul>
+    Return value should be desired modified data.
+    <br><br>Example:
 <pre>
-callback: (req, res, data) => {
+callback: (props) => {
+  const { params, query, body, data, req } = props;
   // modify data and return back
   data.time = new Date();
   return data;
