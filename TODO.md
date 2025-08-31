@@ -11,13 +11,12 @@
 
 **Features**
 
-- functions params should be one object instead of multiple params:
-  - applyIf: (req, params, data) -> applyIf: ({ req, params, data })
-- mark sa mocked with
+- mark as mocked with
   - header: x-api-mockup-server: "mocked,conditional,proxy"
-  - query param: ?__api-mockup=true
+  - query param: ?\_\_api-mockup=true
 - allow status change in callback method:
   - e.g. return { data: newData, status: 408 }
+- better readme file - make examples more compatible to each other
 - allow to amend proxied route data
 - include routes via require in config
 - standard error response data overrides
