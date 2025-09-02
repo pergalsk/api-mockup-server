@@ -81,7 +81,9 @@ In bigger projects you don't want to store all of your routes and responses in o
 
 If you want to mockup only some of rest APIs you can use API Mockup Server as a mockup layer between your running back-end server and frontend application. In this scenario you have to configure proxy server target with running back-end. If you use more then one target, API Mockup Server will ask you to choose one target via CLI interface on server start.
 
-Note: You don't have to restart the server when you make changes in routes config _(if path is defined)_ or data files. API Mockup Server will automatically reflect new configuration while running.
+Note 1: You don't have to restart the server when you make changes in routes config _(if path is defined)_ or data files. API Mockup Server will automatically reflect new configuration while running.
+
+Note 2: Server will add `x-api-mockup-server` header to all mocked/proxied responses with some metadata. You can turn it off by setting `mockHeader: false` in server options.
 
 ```
 FILE STRUCTURE:
@@ -257,12 +259,21 @@ amServer(serverConfigOptions);
     </td>
     <td><code>{ min: 0, max: 0}</code></td>
   </tr>
-    <tr>
+  <tr>
+    <td><b>mockHeader</b><br><em><small>(optional)</small></em></td>
+    <td><code>boolean</code></td>
+    <td>
+      Server will add <code>x-api-mockup-server</code> header to all responses which are handled by API Mockup Server. Header value will contain some metadata about the configuration of the route.
+      <br><br>Example: <code>x-api-mockup-server: mocked,file,dynamic,500ms</code>.
+      <br><br>Set option to <code>false</code> to turn off this behavior.
+    </td>
+    <td><code>true</code></td>
+  </tr>
+  <tr>
     <td><b>routes</b><br><small><em>(mandatory)</em></small></td>
     <td><code>string | Array</code></td>
     <td>
-      Definitions of API routes. It could be array or path to definition file. 
-      <a href="#routes-configuration-options">More config options below.</a>
+      Definitions of API routes. It could be array or path to definition file. For more info about how routes should be configured look into <a href="#routes-configuration-options">routes options below.</a>
       <br>Example: <code>"./routes.js"</code>
       <br>Example: 
 <pre>

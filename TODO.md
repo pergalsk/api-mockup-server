@@ -11,9 +11,6 @@
 
 **Features**
 
-- mark as mocked with
-  - header: x-api-mockup-server: "mocked,conditional,proxy"
-  - query param: ?\_\_api-mockup=true
 - allow status change in callback method:
   - e.g. return { data: newData, status: 408 }
 - better readme file - make examples more compatible to each other
