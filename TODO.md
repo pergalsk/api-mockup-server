@@ -2,12 +2,12 @@
 
 **Fix**
 
+- better error catching for callback/applyIf functions
+- problems with websockets after config reload
 - make it more robust against wrong settings
   - e.g. avoid error when wrong routes file: TypeError: getAllRoutes(...).filter is not a function
 - (node:22272) [DEP0060] DeprecationWarning: The `util._extend` API is deprecated. Please use Object.assign() instead.
   (Use `node --trace-deprecation ...` to show where the warning was created)
-- Cached responses vs message "No need to server restart."
-- better error catching for callback function
 
 **Features**
 
@@ -19,6 +19,8 @@
 - standard error response data overrides
 - command-line params: port, database folder (APIs for different projects)
 
-**Dev tools**
+**Dev**
 
+- reduce dependencies
 - ES modules
+- tests
