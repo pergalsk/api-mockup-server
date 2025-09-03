@@ -23,7 +23,6 @@
     "chalk": "^4.1.2",
     "chokidar": "^3.5.2",
     "cors": "^2.8.5",
-    "date-fns": "^2.27.0",
     "express": "^4.17.1",
     "http-proxy-middleware": "^2.0.1",
     "inquirer": "^8.2.0",
