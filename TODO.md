@@ -21,6 +21,5 @@
 
 **Dev**
 
-- reduce dependencies
 - ES modules
 - tests
