@@ -25,7 +25,7 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "http-proxy-middleware": "^2.0.1",
-    "inquirer": "^8.2.0",
+    "inquirer": "^8.2.7",
     "path-to-regexp": "^6.2.0"
   },
   "devDependencies": {
