@@ -47,7 +47,7 @@ async function amServer(options = {}) {
   watcher.watch({ routes, database }, () => {
     // required files are cached in NodeJs -> clear cache
     routing.clearRequireCache(serverOptions.routes);
-    // regerate middleware (files could be changed)
+    // regenerate middleware (files could be changed)
     proxyMiddleware = proxy.getProxy(serverOptions, target);
     routerMiddleware = routing.getRouter(serverOptions);
   });
