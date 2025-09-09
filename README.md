@@ -509,6 +509,29 @@ callback: (props) => {
 
 </table>
 
+## Proxy route interceptors
+
+If you have configured proxy target you can intercept and modify data by omitting <code>key</code> and <code>data</code> params in route definition. (Param <code>status</code> is also not needed here - it will be ignored.)
+
+Example:
+
+```javascript
+module.exports = [
+  {
+    active: true,
+    path: '/user/:id',
+    method: 'GET',
+    callback: ({ data }) => {
+      // modify proxied data here, e.g:
+      data.fullName = `${data.firstName} ${data.lastName}`;
+      return data;
+    },
+  },
+];
+```
+
+This route will intercept and change data from proxy target for GET <code>/user/:id</code> requests.
+
 ## License
 
 MIT
