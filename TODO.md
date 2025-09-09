@@ -11,7 +11,6 @@
 
 **Features**
 
-- allow to amend proxied route data
 - better readme file - make examples more compatible to each other
 - include routes via require in config
 - standard error response data overrides
