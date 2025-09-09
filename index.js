@@ -35,7 +35,7 @@ async function amServer(options = {}) {
   });
 
   // use generated router middleware
-  let routerMiddleware = routing.getRouter(serverOptions);
+  let routerMiddleware = routing.getRouter(serverOptions, target);
   app.use((...params) => {
     routerMiddleware(...params);
   });
