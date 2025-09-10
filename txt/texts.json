@@ -20,6 +20,7 @@
   "PROXY_NOT_CONFIGURED": "Proxy server was not configured. Serving only defined routes.",
   "PROXY_SERVER_AT": "Proxy server at ",
   "PROXY_TARGET": "Proxy target:",
+  "RECONFIGURING_SM_SERVER": "Reconfiguring proxy server...",
   "RESPONSE_MODIFIED": "Response potentially modified.",
   "ROUTE_PATH_SERVED_EMPTY": "Route \"%path%\" will be served with empty response.",
   "ROUTE_WAS_NOT_REGISTERED": "Route was not registered.",

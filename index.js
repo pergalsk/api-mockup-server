@@ -3,8 +3,10 @@ const corsMiddleware = require('cors');
 const defaultOptions = require('./lib/definitions');
 const routing = require('./lib/register');
 const proxy = require('./lib/proxy');
+const file = require('./lib/file');
 const watcher = require('./lib/watch');
 const log = require('./lib/log');
+const { SERVER_RESTART_DEBOUNCE_MS } = require('./lib/constants');
 
 async function amServer(options = {}) {
   log.serverStart();
@@ -41,16 +43,33 @@ async function amServer(options = {}) {
   });
 
   // start server listening
-  app.listen(port, log.serverListen(serverOptions));
+  let server = app.listen(port, log.serverListen(serverOptions));
+
+  let restartTimeout;
 
   // watch for changes
   watcher.watch({ routes, database }, () => {
+    debouncedServerRestart();
+  });
+
+  function debouncedServerRestart() {
+    clearTimeout(restartTimeout);
+    restartTimeout = setTimeout(() => {
+      server.close(() => {
+        log.serverRestart();
+        recreateMiddleware();
+        server = app.listen(port);
+      });
+    }, SERVER_RESTART_DEBOUNCE_MS);
+  }
+
+  function recreateMiddleware() {
     // required files are cached in NodeJs -> clear cache
-    routing.clearRequireCache(serverOptions.routes);
+    file.clearRequireCache(serverOptions.routes);
     // regenerate middleware (files could be changed)
     proxyMiddleware = proxy.getProxy(serverOptions, target);
     routerMiddleware = routing.getRouter(serverOptions);
-  });
+  }
 }
 
 module.exports = amServer;
