@@ -11,9 +11,10 @@
 
 **Features**
 
+- custom route database
+  - { database: './custom/folder' }
 - better readme file - make examples more compatible to each other
 - include routes via require in config
-- standard error response data overrides
 - command-line params: port, database folder (APIs for different projects)
 
 **Dev**
