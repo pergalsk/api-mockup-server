@@ -13,6 +13,8 @@
   "FILE_OR_DIR_CHANGED": "File \"%path%\" has been changed.",
   "FILE_OR_DIR_CHANGED_DATABASE": ["Database file \"%path%\" has been changed."],
   "FILE_OR_DIR_CHANGED_ROUTES": ["Routes file \"%path%\" has been changed."],
+  "FN_ERROR_END": "End of %fnName% error listing (%key%).",
+  "FN_ERROR_START": "Error in %fnName% function (%key%).",
   "HANDLED_ROUTES": "Handled routes:",
   "NO_ROUTES_DEFINED": "No routes defined.",
   "PROXY_CONFIGURED": "Proxy server configured. Not active routes will be redirected.",
