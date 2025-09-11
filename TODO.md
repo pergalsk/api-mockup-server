@@ -2,7 +2,6 @@
 
 **Fix**
 
-- better error catching for callback/applyIf functions
 - problems with websockets after config reload
 - make it more robust against wrong settings
   - e.g. avoid error when wrong routes file: TypeError: getAllRoutes(...).filter is not a function
@@ -11,6 +10,8 @@
 
 **Features**
 
+- add cond to header (applyIf)
+- better route list colors
 - custom route database
   - { database: './custom/folder' }
 - better readme file - make examples more compatible to each other
