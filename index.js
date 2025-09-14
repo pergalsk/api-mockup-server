@@ -8,7 +8,7 @@ const proxy = require('./lib/proxy');
 const file = require('./lib/file');
 const watcher = require('./lib/watch');
 const log = require('./lib/log');
-const utils = require('./lib/utils');
+const { debounce } = require('./lib/utils');
 
 const { SERVER_RESTART_DEBOUNCE_MS } = require('./lib/constants');
 
@@ -49,7 +49,7 @@ async function amServer(options = {}) {
   // start server listening
   let server = ServerWrapper(app.listen(port, log.serverListen(serverOptions)));
 
-  const debouncedServerRestart = utils.debounce(
+  const debouncedServerRestart = debounce(
     () => server.destroy(handleServerRestart),
     SERVER_RESTART_DEBOUNCE_MS
   );
