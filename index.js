@@ -7,6 +7,7 @@ const routing = require('./lib/register');
 const proxy = require('./lib/proxy');
 const file = require('./lib/file');
 const watcher = require('./lib/watch');
+const cli = require('./lib/cli');
 const log = require('./lib/log');
 const { debounce } = require('./lib/utils');
 
@@ -17,6 +18,9 @@ async function amServer(options = {}) {
 
   const serverOptions = { ...defaultOptions.server, ...options };
   const { port, routes, database, cors } = serverOptions;
+
+  // get proxy target from user selection
+  const target = await proxy.getProxyTarget(serverOptions.proxy);
 
   // create express application
   const app = express();
@@ -31,9 +35,6 @@ async function amServer(options = {}) {
   // use encode URLs middleware
   app.use(express.urlencoded({ extended: true }));
 
-  // get proxy target from user selection
-  const target = await proxy.getProxyTarget(serverOptions.proxy);
-
   // use generated http proxy middleware
   let proxyMiddleware = proxy.getProxy(serverOptions, target);
   app.use((...params) => {
@@ -41,7 +42,7 @@ async function amServer(options = {}) {
   });
 
   // use generated router middleware
-  let routerMiddleware = routing.getRouter(serverOptions, target);
+  let { routerMiddleware, routesDisplayList } = routing.getRouter(serverOptions, target);
   app.use((...params) => {
     routerMiddleware(...params);
   });
@@ -57,6 +58,11 @@ async function amServer(options = {}) {
   // watch for changes
   watcher.watch({ routes, database }, debouncedServerRestart);
 
+  // create command-line shortcuts
+  cli.shortcuts(() => {
+    return { serverOptions, target, routesDisplayList };
+  });
+
   function handleServerRestart() {
     log.serverRestart();
 
@@ -65,7 +71,12 @@ async function amServer(options = {}) {
 
     // regenerate middleware (files could be changed)
     proxyMiddleware = proxy.getProxy(serverOptions, target);
-    routerMiddleware = routing.getRouter(serverOptions, target);
+    const { routerMiddleware: router, routesDisplayList: routes } = routing.getRouter(
+      serverOptions,
+      target
+    );
+    routerMiddleware = router;
+    routesDisplayList = routes;
 
     // re-create server on the same port
     server = ServerWrapper(app.listen(port));
