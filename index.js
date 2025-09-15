@@ -48,7 +48,7 @@ async function amServer(options = {}) {
   });
 
   // start server listening
-  let server = ServerWrapper(app.listen(port, log.serverListen(serverOptions)));
+  let server = ServerWrapper(app.listen(port), serverOptions);
 
   const debouncedServerRestart = debounce(
     () => server.destroy(handleServerRestart),
@@ -79,7 +79,7 @@ async function amServer(options = {}) {
     routesDisplayList = routes;
 
     // re-create server on the same port
-    server = ServerWrapper(app.listen(port));
+    server = ServerWrapper(app.listen(port), serverOptions);
   }
 }
 

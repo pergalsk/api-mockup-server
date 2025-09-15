@@ -2,7 +2,6 @@
 
 **Fix**
 
-- problems with websockets after config reload
 - make it more robust against wrong settings
   - e.g. avoid error when wrong routes file: TypeError: getAllRoutes(...).filter is not a function
 - (node:22272) [DEP0060] DeprecationWarning: The `util._extend` API is deprecated. Please use Object.assign() instead.
