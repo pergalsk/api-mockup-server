@@ -20,7 +20,7 @@ async function amServer(options = {}) {
   const { port, routes, database, cors } = serverOptions;
 
   // get proxy target from user selection
-  const target = await proxy.getProxyTarget(serverOptions.proxy);
+  const target = await cli.getProxyTarget(serverOptions.proxy);
 
   // create express application
   const app = express();
