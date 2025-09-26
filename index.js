@@ -35,14 +35,16 @@ async function amServer(options = {}) {
   // use encode URLs middleware
   app.use(express.urlencoded({ extended: true }));
 
+  let suspended = null;
+
   // use generated http proxy middleware
-  let proxyMiddleware = proxy.getProxy(serverOptions, target);
+  let proxyMiddleware = proxy.getProxy(serverOptions, target, suspended);
   app.use((...params) => {
     proxyMiddleware(...params);
   });
 
   // use generated router middleware
-  let { routerMiddleware, routesDisplayList } = routing.getRouter(serverOptions, target);
+  let { routerMiddleware, routesDisplayList } = routing.getRouter(serverOptions, target, suspended);
   app.use((...params) => {
     routerMiddleware(...params);
   });
@@ -60,26 +62,44 @@ async function amServer(options = {}) {
 
   // create command-line shortcuts
   cli.shortcuts(() => {
-    return { serverOptions, target, routesDisplayList };
+    return {
+      serverOptions,
+      target,
+      routesDisplayList,
+      suspended,
+      callbacks: {
+        suspend: () => {
+          if (suspended == null || suspended === 'TURNING_OFF') {
+            suspended = 'TURNING_ON';
+          } else {
+            suspended = 'TURNING_OFF';
+          }
+          debouncedServerRestart(suspended);
+        },
+      },
+    };
   });
 
   function handleServerRestart() {
-    log.serverRestart();
+    const isRestart = true;
+
+    suspended == null && log.serverRestart();
 
     // required files are cached in NodeJs -> clear cache
     file.clearRequireCache(serverOptions.routes);
 
     // regenerate middleware (files could be changed)
-    proxyMiddleware = proxy.getProxy(serverOptions, target);
+    proxyMiddleware = proxy.getProxy(serverOptions, target, suspended);
     const { routerMiddleware: router, routesDisplayList: routes } = routing.getRouter(
       serverOptions,
-      target
+      target,
+      suspended
     );
     routerMiddleware = router;
     routesDisplayList = routes;
 
     // re-create server on the same port
-    server = ServerWrapper(app.listen(port), serverOptions);
+    server = ServerWrapper(app.listen(port), serverOptions, isRestart);
   }
 }
 
