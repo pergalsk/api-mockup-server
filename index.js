@@ -1,6 +1,7 @@
 const express = require('express');
 const corsMiddleware = require('cors');
 
+const { getState, setState } = require('./lib/store');
 const defaultOptions = require('./lib/definitions');
 const ServerWrapper = require('./lib/server');
 const routing = require('./lib/register');
@@ -21,6 +22,7 @@ async function amServer(options = {}) {
 
   // get proxy target from user selection
   const target = await cli.getProxyTarget(serverOptions.proxy);
+  setState({ target });
 
   // create express application
   const app = express();
@@ -35,16 +37,14 @@ async function amServer(options = {}) {
   // use encode URLs middleware
   app.use(express.urlencoded({ extended: true }));
 
-  let suspended = null;
-
   // use generated http proxy middleware
-  let proxyMiddleware = proxy.getProxy(serverOptions, target, suspended);
+  let proxyMiddleware = proxy.getProxy(serverOptions);
   app.use((...params) => {
     proxyMiddleware(...params);
   });
 
   // use generated router middleware
-  let { routerMiddleware, routesDisplayList } = routing.getRouter(serverOptions, target, suspended);
+  let { routerMiddleware, routesDisplayList } = routing.getRouter(serverOptions);
   app.use((...params) => {
     routerMiddleware(...params);
   });
@@ -64,17 +64,15 @@ async function amServer(options = {}) {
   cli.shortcuts(() => {
     return {
       serverOptions,
-      target,
       routesDisplayList,
-      suspended,
       callbacks: {
         suspend: () => {
-          if (suspended == null || suspended === 'TURNING_OFF') {
-            suspended = 'TURNING_ON';
+          if (getState().suspended == null || getState().suspended === 'TURNING_OFF') {
+            setState({ suspended: 'TURNING_ON' });
           } else {
-            suspended = 'TURNING_OFF';
+            setState({ suspended: 'TURNING_OFF' });
           }
-          debouncedServerRestart(suspended);
+          debouncedServerRestart();
         },
       },
     };
@@ -83,18 +81,15 @@ async function amServer(options = {}) {
   function handleServerRestart() {
     const isRestart = true;
 
-    suspended == null && log.serverRestart();
+    getState().suspended == null && log.serverRestart();
 
     // required files are cached in NodeJs -> clear cache
     file.clearRequireCache(serverOptions.routes);
 
     // regenerate middleware (files could be changed)
-    proxyMiddleware = proxy.getProxy(serverOptions, target, suspended);
-    const { routerMiddleware: router, routesDisplayList: routes } = routing.getRouter(
-      serverOptions,
-      target,
-      suspended
-    );
+    proxyMiddleware = proxy.getProxy(serverOptions);
+    const { routerMiddleware: router, routesDisplayList: routes } =
+      routing.getRouter(serverOptions);
     routerMiddleware = router;
     routesDisplayList = routes;
 
