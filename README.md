@@ -532,6 +532,17 @@ module.exports = [
 
 This route will intercept and change data from proxy target for GET <code>/user/:id</code> requests.
 
+## CLI shortcuts
+
+The server now supports interactive keyboard shortcuts in supported terminals. Shortcuts include:
+
+- `q` — Quit the server
+- `r` — List configured routes
+- `t` — Show configured proxy target
+- `p` — Show current port
+- `f` — Show global prefix
+- `s` — Suspend/resume mocking
+
 ## License
 
 MIT
