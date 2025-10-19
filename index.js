@@ -53,12 +53,12 @@ async function amServer(options = {}) {
   let server = ServerWrapper(app.listen(port), serverOptions);
 
   const debouncedServerRestart = debounce(
-    () => server.destroy(handleServerRestart),
+    (...args) => server.destroy(() => handleServerRestart(...args)),
     SERVER_RESTART_DEBOUNCE_MS
   );
 
   // watch for changes
-  watcher.watch({ routes, database }, debouncedServerRestart);
+  watcher.watch({ routes, database }, () => debouncedServerRestart(true));
 
   // create command-line shortcuts
   cli.shortcuts(() => {
@@ -67,34 +67,31 @@ async function amServer(options = {}) {
       routesDisplayList,
       callbacks: {
         suspend: () => {
-          if (getState().suspended == null || getState().suspended === 'TURNING_OFF') {
-            setState({ suspended: 'TURNING_ON' });
-          } else {
-            setState({ suspended: 'TURNING_OFF' });
-          }
+          const turnOn = getState().suspended == null || getState().suspended === 'TURNING_OFF';
+          setState({ suspended: turnOn ? 'TURNING_ON' : 'TURNING_OFF' });
           debouncedServerRestart();
         },
       },
     };
   });
 
-  function handleServerRestart() {
-    const isRestart = true;
-
-    getState().suspended == null && log.serverRestart();
+  function handleServerRestart(isFileChange = false) {
+    setState({ isRestart: true });
 
     // required files are cached in NodeJs -> clear cache
     file.clearRequireCache(serverOptions.routes);
 
     // regenerate middleware (files could be changed)
     proxyMiddleware = proxy.getProxy(serverOptions);
-    const { routerMiddleware: router, routesDisplayList: routes } =
-      routing.getRouter(serverOptions);
+    const { routerMiddleware: router, routesDisplayList: routes } = routing.getRouter(
+      serverOptions,
+      isFileChange
+    );
     routerMiddleware = router;
     routesDisplayList = routes;
 
     // re-create server on the same port
-    server = ServerWrapper(app.listen(port), serverOptions, isRestart);
+    server = ServerWrapper(app.listen(port), serverOptions);
   }
 }
 
