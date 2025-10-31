@@ -15,7 +15,7 @@ const { debounce } = require('./lib/utils');
 const { SERVER_RESTART_DEBOUNCE_MS } = require('./lib/constants');
 
 async function amServer(options = {}) {
-  log.serverStart();
+  log.appStart();
 
   const serverOptions = { ...defaultOptions.server, ...options };
   const { port, routes, database, cors } = serverOptions;
