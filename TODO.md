@@ -9,9 +9,6 @@
 
 **Features**
 
-- on/off mocking switch
-- better route list colors
-- add cond to header (applyIf)
 - custom route database
   - { database: './custom/folder' }
 - better readme file - make examples more compatible to each other
