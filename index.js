@@ -44,13 +44,13 @@ async function amServer(options = {}) {
   });
 
   // use generated router middleware
-  let { routerMiddleware, routesDisplayList } = routing.getRouter(serverOptions);
+  let { routerMiddleware, routesDisplayList, stats } = routing.getRouter(serverOptions);
   app.use((...params) => {
     routerMiddleware(...params);
   });
 
   // start server listening
-  let server = ServerWrapper(app.listen(port), serverOptions);
+  let server = ServerWrapper(app.listen(port), serverOptions, routesDisplayList, stats);
 
   const debouncedServerRestart = debounce(
     (...args) => server.destroy(() => handleServerRestart(...args)),
@@ -83,15 +83,16 @@ async function amServer(options = {}) {
 
     // regenerate middleware (files could be changed)
     proxyMiddleware = proxy.getProxy(serverOptions);
-    const { routerMiddleware: router, routesDisplayList: routes } = routing.getRouter(
-      serverOptions,
-      isFileChange
-    );
+    const {
+      routerMiddleware: router,
+      routesDisplayList: routes,
+      stats,
+    } = routing.getRouter(serverOptions, isFileChange);
     routerMiddleware = router;
     routesDisplayList = routes;
 
     // re-create server on the same port
-    server = ServerWrapper(app.listen(port), serverOptions);
+    server = ServerWrapper(app.listen(port), serverOptions, routesDisplayList, stats);
   }
 }
 
