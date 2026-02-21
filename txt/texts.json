@@ -29,8 +29,8 @@
   "LABEL_ROUTES": "routes",
   "LABEL_SUSPEND": "suspend",
   "LABEL_TARGET": "target",
-  "MOCKING_RESUMED": "Mocking resumed.",
-  "MOCKING_SUSPENDED": "Mocking suspended. Press 's' to resume.",
+  "MOCKING_RESUMED": "✅ Mocking resumed.",
+  "MOCKING_SUSPENDED": "⚠️  Mocking suspended. Press 's' to resume.",
   "NO_ROUTES_DEFINED": "No routes defined.",
   "PORT": "Port:",
   "PROXY_CONFIGURED": "Proxy server configured. Inactive routes will be redirected.",
@@ -55,20 +55,13 @@
   ],
   "WARNING_INVALID_METHOD": "WARNING: Invalid method (%method%) found in route config item.",
   "WARNING_MISSING_ROUTE_DEFINITIONS_SERVER_ACTIVE": [
-    "No active routes defined.",
-    "All requests will be redirected to proxy server."
+    "No active routes defined. All requests will be redirected to proxy server."
   ],
   "WARNING_MISSING_ROUTE_DEFINITIONS": [
-    "WARNING: Missing active routes definitions or definitions file has wrong format.",
-    "Please define some routes in server options { routes: [ ... ] },",
-    "or provide path to routes config JS file.",
-    "For example config file in { routes: \"./routes.js\" } could contain:",
-    "module.exports = [",
-    "  { active: true, key: 'PRODUCT_CREATE', method: 'POST', path: '/product', status: 200 },",
-    "  { active: true, key: 'PRODUCT_DETAIL', method: 'GET', path: '/product/:id', status: 200 },",
-    "  { active: true, key: 'PRODUCT_DELETE', method: 'DELETE', path: '/product/:id', status: 400 }",
-    "];",
-    "Look into documentation for more details."
+    "   WARNING: Missing active route definitions",
+    "   or definitions file has wrong format.",
+    "   Please define some routes in server options.",
+    "   Look into documentation for more details."
   ],
   "WARNING_NO_DATA_OR_KEY": [
     "WARNING: You provided no data or key.",
