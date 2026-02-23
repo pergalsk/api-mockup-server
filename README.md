@@ -536,12 +536,10 @@ This route will intercept and change data from proxy target for GET <code>/user/
 
 The server now supports interactive keyboard shortcuts in supported terminals. Shortcuts include:
 
-- `q` — Quit the server
 - `r` — List configured routes
-- `t` — Show configured proxy target
-- `p` — Show current port
-- `f` — Show global prefix
+- `c` — Config (port, prefix, proxy target)
 - `s` — Suspend/resume mocking
+- `q` — Quit the server
 
 ## License
 
