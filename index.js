@@ -1,18 +1,18 @@
-const express = require('express');
-const corsMiddleware = require('cors');
+import express from 'express';
+import corsMiddleware from 'cors';
 
-const { getState, setState } = require('./lib/store');
-const defaultOptions = require('./lib/definitions');
-const ServerWrapper = require('./lib/server');
-const routing = require('./lib/register');
-const proxy = require('./lib/proxy');
-const file = require('./lib/file');
-const watcher = require('./lib/watch');
-const cli = require('./lib/cli');
-const log = require('./lib/log');
-const { debounce } = require('./lib/utils');
+import { getState, setState } from './lib/store.js';
+import * as defaultOptions from './lib/definitions.js';
+import ServerWrapper from './lib/server.js';
+import * as routing from './lib/register.js';
+import * as proxy from './lib/proxy.js';
+import * as file from './lib/file.js';
+import * as watcher from './lib/watch.js';
+import * as cli from './lib/cli.js';
+import * as log from './lib/log.js';
+import { debounce } from './lib/utils.js';
 
-const { SERVER_RESTART_DEBOUNCE_MS } = require('./lib/constants');
+import { RESTART_DEBOUNCE } from './lib/constants.js';
 
 async function amServer(options = {}) {
   log.appStart();
@@ -54,7 +54,7 @@ async function amServer(options = {}) {
 
   const debouncedServerRestart = debounce(
     (...args) => server.destroy(() => handleServerRestart(...args)),
-    SERVER_RESTART_DEBOUNCE_MS
+    RESTART_DEBOUNCE
   );
 
   // watch for changes
@@ -96,4 +96,4 @@ async function amServer(options = {}) {
   }
 }
 
-module.exports = amServer;
+export { amServer as default, amServer as 'module.exports' };
