@@ -10,6 +10,18 @@ API Mockup Server may be useful during application development when for example 
 npm install api-mockup-server --save
 ```
 
+Requires Node.js 20.19+ (or 22.12+).
+
+The package can be loaded with both `require` and `import`:
+
+```javascript
+// CommonJS
+const amServer = require('api-mockup-server');
+
+// ES modules
+import amServer from 'api-mockup-server';
+```
+
 ## Quick start
 
 Create `server.js` file:
