@@ -8,6 +8,8 @@ ES modules (`import`) with proxy target. Requests which are not mocked go to the
 
 Needs internet (uses public API https://jsonplaceholder.typicode.com).
 
+Note: second target `http://localhost:3000` is only there to show the targets list. If you choose it without a local backend on that port, proxied requests fail.
+
 ## Run
 
 ```
