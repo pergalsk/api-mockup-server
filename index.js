@@ -49,6 +49,9 @@ async function amServer(options = {}) {
     routerMiddleware(...params);
   });
 
+  // watch for changes (wait until ready, otherwise early file changes are missed)
+  await watcher.watch({ routes, database }, () => debouncedServerRestart(true));
+
   // start server listening
   let server = ServerWrapper(app.listen(port), serverOptions, routesDisplayList, stats);
 
@@ -56,9 +59,6 @@ async function amServer(options = {}) {
     (...args) => server.destroy(() => handleServerRestart(...args)),
     RESTART_DEBOUNCE
   );
-
-  // watch for changes
-  watcher.watch({ routes, database }, () => debouncedServerRestart(true));
 
   // create command-line shortcuts
   cli.shortcuts(() => {
