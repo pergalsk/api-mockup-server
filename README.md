@@ -87,6 +87,8 @@ Now, you can make 3 requests:
 - GET http://localhost:9933/api/books/7 - server will response with HTTP status 200 and return static data with book detail _(regardless of provided id, in this case 7)_
 - POST http://localhost:9933/api/authors - server will response with HTTP status 400 and return static data with error message _(regardless of provided POST request data)_
 
+More runnable examples (basic, extended, proxy, cjs) are in the [examples](./examples) folder.
+
 ## Advanced server configuration
 
 In bigger projects you don't want to store all of your routes and responses in one file. You can configure routes in separate file using `routes` param and responses in `database` param providing path to folder containing JSON files with response data.
