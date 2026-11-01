@@ -18,9 +18,9 @@ module.exports = [
     path: '/books/:id',
     method: 'GET',
     status: 200,
-    applyIf: ({ params }) => {
-      // mocked only for /api/v2/books/10
-      return params.id === '10';
+    callback: ({ data, params }) => {
+      // use id from URL, e.g. /api/v2/books/7 -> id: 7
+      return { ...data, id: Number(params.id) };
     },
   },
   {
