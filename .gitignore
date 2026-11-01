@@ -2,3 +2,4 @@
 node_modules
 .npmrc
 .claude/
+examples/*/package-lock.json
