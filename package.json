@@ -12,7 +12,9 @@
   "engines": {
     "node": ">=20.19"
   },
-  "scripts": {},
+  "scripts": {
+    "test": "node --test"
+  },
   "author": "Peter Gál",
   "license": "MIT",
   "repository": {
