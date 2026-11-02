@@ -71,15 +71,16 @@ describe('proxy', () => {
 
   it(
     'passes URL params to interceptor callback',
-    { todo: 'bug: params is always {} in interceptor callback (lib/proxy.js:109)' },
     async (t) => {
       const { server } = await startWithProxy(
         t,
         `[{ active: true, path: '/users/:id', callback: ({ data, params }) => ({ ...data, params }) }]`
       );
 
-      const res = await server.fetch('/api/users/5');
-      assert.deepEqual((await res.json()).params, { id: '5' });
+      for (const id of ['5', 'name with spaces', 'another']) {
+        const res = await server.fetch(`/api/users/${encodeURIComponent(id)}?q=ignored`);
+        assert.deepEqual((await res.json()).params, { id });
+      }
     }
   );
 
