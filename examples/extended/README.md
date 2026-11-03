@@ -2,7 +2,7 @@
 
 ES modules (`import`) with:
 
-- routes in separate file (`routes.cjs`)
+- routes in separate file (`routes.js`)
 - response data in JSON files (`db/`)
 - data file per HTTP status (`BOOK_DETAIL.400.json`)
 - `callback` - modify response data
@@ -10,9 +10,7 @@ ES modules (`import`) with:
 - different methods: GET, POST (200), PUT (400), DELETE
 - route `prefix` - overrides global prefix
 - `delay` - random response delay (500 - 1500 ms)
-- hot reload - edit `routes.cjs` or `db/` files, server restarts automatically
-
-Note: routes file is `.cjs` because hot reload of ESM routes file is not supported yet.
+- hot reload - edit `routes.js` or `db/` files, server restarts automatically
 
 ## Run
 
@@ -41,7 +39,7 @@ curl -X DELETE http://localhost:9933/api/v1/books/10
 
 ## Hot reload
 
-1. Set `active: true` for the `/authors` route in `routes.cjs` and save.
+1. Set `active: true` for the `/authors` route in `routes.js` and save.
 2. GET http://localhost:9933/api/v1/authors - now returns authors list from `db/AUTHORS_ALL.json` (no restart needed).
 
 Data: books link to authors by `authorId`, authors list their `bookIds`.

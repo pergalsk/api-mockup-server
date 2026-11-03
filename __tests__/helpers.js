@@ -116,6 +116,7 @@ async function runServer({ dir, port, scriptName, env = {} }) {
     url,
     fetch: (path, init) => fetch(url(path), init),
     writeFile: (name, content) => writeFile(dir, name, content),
+    writeStdin: (text) => child.stdin.write(text),
     output: () => output,
     isRunning: () => child.exitCode === null,
     stop: async () => {

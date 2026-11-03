@@ -2,7 +2,7 @@ import amServer from 'api-mockup-server';
 
 amServer({
   port: process.env.PORT || 9933,
-  routes: './routes.cjs', // path to file with routes (CommonJS for hot reload)
+  routes: './routes.js', // path to file with routes
   database: './db', // path to directory with data files
   prefix: '/api/v1',
   encoding: 'utf8',

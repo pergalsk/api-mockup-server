@@ -141,9 +141,9 @@ describe('extended example', () => {
   it('hot reloads routes file (disabled route turned on)', async () => {
     assert.equal((await server.fetch('/api/v1/authors')).status, 404);
 
-    const routesPath = nodePath.join(server.dir, 'routes.cjs');
+    const routesPath = nodePath.join(server.dir, 'routes.js');
     const routes = nodeFs.readFileSync(routesPath, 'utf8');
-    server.writeFile('routes.cjs', routes.replace('active: false', 'active: true'));
+    server.writeFile('routes.js', routes.replace('active: false', 'active: true'));
 
     await waitFor(async () => (await server.fetch('/api/v1/authors')).status === 200);
     const authors = await getJson(server, '/api/v1/authors');
