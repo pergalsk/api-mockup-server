@@ -1,5 +1,7 @@
 # API Mockup Server
 
+[![CI](https://github.com/pergalsk/api-mockup-server/actions/workflows/ci.yml/badge.svg)](https://github.com/pergalsk/api-mockup-server/actions/workflows/ci.yml)
+
 Node server for simple rest API mockup with JSON format responses. Just define couple of routes with response data and start the server. Server will listen on default port 9933.
 
 API Mockup Server may be useful during application development when for example back-end part is not ready yet and you want to work separately on front-end with mocked data, or you have a fully functional back-end part but you want to mockup only some of your rest APIs in order to simulate a problematic situation, bugs, edge cases, error responses, etc...
@@ -10,7 +12,7 @@ API Mockup Server may be useful during application development when for example 
 npm install api-mockup-server --save
 ```
 
-Requires Node.js 20.19+ (or 22.12+).
+Requires Node.js 24+.
 
 The package can be loaded with both `require` and `import`:
 
