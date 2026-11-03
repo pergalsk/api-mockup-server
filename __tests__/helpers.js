@@ -68,8 +68,42 @@ async function startServer({ options, files = {}, moduleType = 'esm' }) {
   const scriptName = moduleType === 'cjs' ? '__server.cjs' : '__server.mjs';
   writeFile(dir, scriptName, script);
 
+  return runServer({ dir, port, scriptName });
+}
+
+/**
+ * Starts an example from `examples/<name>` in a child process. The example is copied
+ * into a temp directory (so tests can edit its files) with `api-mockup-server` linked
+ * in its node_modules (so `npm install` is not needed).
+ * @param {string} name example folder name
+ * @param {Object<string, string>} [env] extra env vars (e.g. PROXY_TARGET)
+ * @returns {Promise<Object>} server handle (same as startServer)
+ */
+async function startExample(name, env = {}) {
+  const port = await getFreePort();
+  const dir = nodeFs.mkdtempSync(nodePath.join(nodeOs.tmpdir(), `amserver-example-${name}-`));
+
+  nodeFs.cpSync(nodePath.join(PKG_DIR, 'examples', name), dir, {
+    recursive: true,
+    filter: (src) => !/node_modules|package-lock\.json/.test(nodePath.basename(src)),
+  });
+  nodeFs.mkdirSync(nodePath.join(dir, 'node_modules'));
+  nodeFs.symlinkSync(PKG_DIR, nodePath.join(dir, 'node_modules', 'api-mockup-server'), 'junction');
+
+  return runServer({ dir, port, scriptName: 'server.js', env: { PORT: String(port), ...env } });
+}
+
+/**
+ * Runs server script in a child process and waits until it responds.
+ * @returns {Promise<Object>} server handle: { port, dir, url(), fetch(), writeFile(), output(), stop() }
+ */
+async function runServer({ dir, port, scriptName, env = {} }) {
   let output = '';
-  const child = spawn(process.execPath, [scriptName], { cwd: dir, stdio: 'pipe' });
+  const child = spawn(process.execPath, [scriptName], {
+    cwd: dir,
+    stdio: 'pipe',
+    env: { ...process.env, ...env },
+  });
   child.stdout.on('data', (chunk) => (output += chunk));
   child.stderr.on('data', (chunk) => (output += chunk));
   const exited = new Promise((resolve) => child.on('exit', resolve));
@@ -137,14 +171,15 @@ async function waitFor(fn, timeout = WAIT_TIMEOUT_MS) {
 
 /**
  * Starts a fake upstream server for proxy tests. Responds with JSON describing the request.
+ * @param {Object} [extra] extra fields added to every response
  * @returns {Promise<Object>} { url, requests, stop() }
  */
-async function startUpstream() {
+async function startUpstream(extra = {}) {
   const requests = [];
   const srv = nodeHttp.createServer((req, res) => {
     requests.push({ method: req.method, url: req.url });
     res.setHeader('content-type', 'application/json');
-    res.end(JSON.stringify({ from: 'upstream', method: req.method, url: req.url }));
+    res.end(JSON.stringify({ from: 'upstream', method: req.method, url: req.url, ...extra }));
   });
   await new Promise((resolve) => srv.listen(0, resolve));
   const { port } = srv.address();
@@ -156,4 +191,4 @@ async function startUpstream() {
   };
 }
 
-export { startServer, startUpstream, waitFor };
+export { startServer, startExample, startUpstream, waitFor };

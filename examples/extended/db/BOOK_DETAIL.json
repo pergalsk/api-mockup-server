@@ -1,6 +1,13 @@
 {
-  "id": 10,
+  "id": 1,
   "title": "Robinson Crusoe",
-  "author": "Daniel Defoe",
-  "pages": 250
+  "author": { "id": 1, "name": "Daniel Defoe" },
+  "year": 1719,
+  "pages": 320,
+  "language": "en",
+  "tags": ["adventure", "island", "survival"],
+  "rating": { "average": 4.1, "count": 1520 },
+  "available": true,
+  "series": null,
+  "addedAt": "2026-01-15T10:30:00Z"
 }

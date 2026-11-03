@@ -1,4 +1,14 @@
 [
-  { "id": 10, "title": "Robinson Crusoe" },
-  { "id": 20, "title": "Don Quixote" }
+  { "id": 1, "title": "Robinson Crusoe", "authorId": 1, "year": 1719, "genre": "Adventure", "available": true },
+  { "id": 2, "title": "Don Quixote", "authorId": 2, "year": 1605, "genre": "Novel", "available": false },
+  { "id": 3, "title": "Pride and Prejudice", "authorId": 3, "year": 1813, "genre": "Romance", "available": true },
+  { "id": 4, "title": "Moby-Dick", "authorId": 4, "year": 1851, "genre": "Adventure", "available": true },
+  { "id": 5, "title": "Frankenstein", "authorId": 5, "year": 1818, "genre": "Gothic", "available": false },
+  { "id": 6, "title": "Emma", "authorId": 3, "year": 1815, "genre": "Romance", "available": true },
+  { "id": 7, "title": "Treasure Island", "authorId": 6, "year": 1883, "genre": "Adventure", "available": true },
+  { "id": 8, "title": "Strange Case of Dr Jekyll and Mr Hyde", "authorId": 6, "year": 1886, "genre": "Gothic", "available": true },
+  { "id": 9, "title": "Gulliver's Travels", "authorId": 7, "year": 1726, "genre": "Satire", "available": false },
+  { "id": 10, "title": "A Journal of the Plague Year", "authorId": 1, "year": 1722, "genre": "Historical", "available": true },
+  { "id": 11, "title": "Sense and Sensibility", "authorId": 3, "year": 1811, "genre": "Romance", "available": true },
+  { "id": 12, "title": "Kidnapped", "authorId": 6, "year": 1886, "genre": "Adventure", "available": false }
 ]
