@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
-import { startServer, startUpstream } from './helpers.js';
+import { startServer, startUpstream, waitFor } from './helpers.js';
 
 async function startWithProxy(t, routes) {
   const upstream = await startUpstream();
@@ -94,5 +94,41 @@ describe('proxy', () => {
     });
     assert.equal(res.status, 200);
     assert.deepEqual(upstream.requests.at(-1), { method: 'POST', url: '/api/items' });
+  });
+
+  it('uses single object server without CLI choice and shows its title', async (t) => {
+    const upstream = await startUpstream();
+    t.after(() => upstream.stop());
+
+    const server = await startServer({
+      options: `{ proxy: { server: { title: 'Integration', url: '${upstream.url}' } }, routes: [] }`,
+    });
+    t.after(() => server.stop());
+
+    assert.equal((await (await server.fetch('/other')).json()).from, 'upstream');
+    await waitFor(() => server.output().includes(`Integration - ${upstream.url}`));
+  });
+
+  it('skips invalid targets with warning', async (t) => {
+    const upstream = await startUpstream();
+    t.after(() => upstream.stop());
+
+    const server = await startServer({
+      options: `{ proxy: { server: [{ title: 'Broken' }, { url: 5 }, null, '${upstream.url}'] }, routes: [] }`,
+    });
+    t.after(() => server.stop());
+
+    assert.equal((await (await server.fetch('/other')).json()).from, 'upstream');
+    assert.equal(server.output().match(/Invalid proxy target skipped/g).length, 3);
+  });
+
+  it('warns and runs without proxy when single object server is invalid', async (t) => {
+    const server = await startServer({
+      options: `{ proxy: { server: { title: 'Broken' } }, routes: [] }`,
+    });
+    t.after(() => server.stop());
+
+    assert.match(server.output(), /Invalid proxy target skipped/);
+    await waitFor(() => server.output().includes('Not configured.'));
   });
 });

@@ -2,7 +2,7 @@
 
 ES modules (`import`) with proxy target. Requests which are not mocked go to the proxy target.
 
-- proxy targets list - on start choose target in CLI (pick `https://jsonplaceholder.typicode.com`)
+- proxy targets list - on start choose target in CLI (pick `JSONPlaceholder - https://jsonplaceholder.typicode.com`)
 - mocked routes - `GET /users/1`, `POST /posts` (200) and `PUT /posts/:id` (500) return local data
 - proxy route interceptors - `/posts/:id` and `/todos/:id` come from proxy target and are modified by `callback`
 

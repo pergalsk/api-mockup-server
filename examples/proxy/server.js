@@ -53,7 +53,7 @@ amServer({
     // more than one target -> CLI asks you to choose one on start
     // (PROXY_TARGET env var sets one target without asking, used by tests)
     server: process.env.PROXY_TARGET || [
-      'https://jsonplaceholder.typicode.com',
+      { title: 'JSONPlaceholder', url: 'https://jsonplaceholder.typicode.com' },
       'http://localhost:3000',
     ],
   },
