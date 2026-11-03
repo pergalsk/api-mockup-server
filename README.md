@@ -318,16 +318,20 @@ amServer(serverConfigOptions);
     <td><b>proxy</b><br><small><em>(optional)</em></small></td>
     <td><code>Object</code></td>
     <td>Proxy server configuration. Undefined or not active routes will be redirected to proxy target. If server is defined as an array, on the start the interactive CLI will ask you to choose from given list of server addresses.
+      <br>Target can be a string (URL) or an object with <code>url</code> (required) and <code>title</code> (optional). Strings and objects can be mixed in one array. Target with title is shown as <code>title - url</code> in CLI list and config output. Invalid target (no <code>url</code> or <code>url</code> is not a string) is skipped with a warning.
       <br>Examples: 
 <pre>{ 
   server: "http://localhost:3000"
+}</pre>
+<pre>{ 
+  server: { title: 'Integration', url: 'http://it.server.example' }
 }</pre>
 <pre>
 {
   server: [
     'http://localhost:3000',
     'http://api.server.example',
-    'http://api2.server.example'
+    { title: 'Integration', url: 'http://it.server.example' }
   ]
 }
 </pre>

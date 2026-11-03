@@ -191,4 +191,4 @@ async function startUpstream(extra = {}) {
   };
 }
 
-export { startServer, startExample, startUpstream, waitFor };
+export { getFreePort, startServer, startExample, startUpstream, waitFor };
