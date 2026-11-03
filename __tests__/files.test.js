@@ -42,6 +42,80 @@ describe('routes file', () => {
     await waitFor(async () => (await getJson(server, '/v')).v === 2);
   });
 
+  it('reloads routes when the ESM routes file changes', async (t) => {
+    const esmRoutesFile = (v) => `export default [{ active: true, path: '/v', data: { v: ${v} } }];\n`;
+    const server = await startServer({
+      options: `{ routes: './routes.mjs' }`,
+      files: { 'routes.mjs': esmRoutesFile(1) },
+    });
+    t.after(() => server.stop());
+
+    assert.deepEqual(await getJson(server, '/v'), { v: 1 });
+
+    server.writeFile('routes.mjs', esmRoutesFile(2));
+    await waitFor(async () => (await getJson(server, '/v')).v === 2);
+
+    // second reload: every reload has to get a fresh copy
+    server.writeFile('routes.mjs', esmRoutesFile(3));
+    await waitFor(async () => (await getJson(server, '/v')).v === 3);
+    assert.ok(server.isRunning());
+  });
+
+  it('loads the routes file again only when it changed', async (t) => {
+    // routes file counts how many times it was loaded
+    const countingRoutesFile = (comment) =>
+      `// ${comment}\nglobalThis.loads = (globalThis.loads ?? 0) + 1;\n` +
+      `export default [{ active: true, path: '/loads', callback: () => ({ loads: globalThis.loads }) }];\n`;
+    const server = await startServer({
+      // keyboard shortcuts work only in TTY
+      options: `(process.stdin.isTTY = true, { routes: './routes.mjs' })`,
+      files: { 'routes.mjs': countingRoutesFile('v1') },
+    });
+    t.after(() => server.stop());
+
+    assert.deepEqual(await getJson(server, '/loads'), { loads: 1 });
+
+    // suspend and resume restart the server, routes file is not changed
+    server.writeStdin('s');
+    await waitFor(async () => (await server.fetch('/loads')).status === 404);
+    server.writeStdin('s');
+    await waitFor(async () => (await server.fetch('/loads')).status === 200);
+    assert.deepEqual(await getJson(server, '/loads'), { loads: 1 });
+
+    server.writeFile('routes.mjs', countingRoutesFile('v2'));
+    await waitFor(async () => (await getJson(server, '/loads')).loads === 2);
+  });
+
+  it('recovers after a syntax error in the ESM routes file', async (t) => {
+    const server = await startServer({
+      options: `{ routes: './routes.mjs' }`,
+      files: { 'routes.mjs': `export default [{` },
+    });
+    t.after(() => server.stop());
+
+    assert.equal((await server.fetch('/v')).status, 404);
+
+    server.writeFile('routes.mjs', `export default [{ active: true, path: '/v', data: { v: 1 } }];\n`);
+
+    await waitFor(async () => (await server.fetch('/v')).status === 200);
+    assert.deepEqual(await getJson(server, '/v'), { v: 1 });
+  });
+
+  it('reloads routes when the JSON routes file changes', async (t) => {
+    const jsonRoutesFile = (v) => JSON.stringify([{ active: true, path: '/v', data: { v } }]);
+    const server = await startServer({
+      options: `{ routes: './routes.json' }`,
+      files: { 'routes.json': jsonRoutesFile(1) },
+    });
+    t.after(() => server.stop());
+
+    assert.deepEqual(await getJson(server, '/v'), { v: 1 });
+
+    server.writeFile('routes.json', jsonRoutesFile(2));
+
+    await waitFor(async () => (await getJson(server, '/v')).v === 2);
+  });
+
   it('loads routes when the routes file is added after start', async (t) => {
     const server = await startServer({ options: `{ routes: './routes.cjs' }` });
     t.after(() => server.stop());

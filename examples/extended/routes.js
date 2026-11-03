@@ -1,4 +1,4 @@
-module.exports = [
+export default [
   {
     active: true,
     key: 'BOOKS_ALL', // response data file: ./db/BOOKS_ALL.json

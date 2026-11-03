@@ -342,7 +342,7 @@ You can specify routes in separate file and include it in server config.
 
 Routes file can be CommonJS (`module.exports = [...]`) or ES module (`export default [...]`).
 
-Note: Hot reload of routes works only with CommonJS routes file. If your project uses `"type": "module"`, name the file with `.cjs` extension (e.g. `routes.cjs`) to keep hot reload.
+Note: Hot reload works with both. Only the routes file itself is reloaded, not the files it imports. Node.js can't remove an ES module from memory, so each reload of an ES module routes file keeps an old copy of the routes in memory.
 
 Example:
 

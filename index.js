@@ -6,7 +6,6 @@ import * as defaultOptions from './lib/definitions.js';
 import ServerWrapper from './lib/server.js';
 import * as routing from './lib/register.js';
 import * as proxy from './lib/proxy.js';
-import * as file from './lib/file.js';
 import * as watcher from './lib/watch.js';
 import * as cli from './lib/cli.js';
 import * as log from './lib/log.js';
@@ -37,28 +36,39 @@ async function amServer(options = {}) {
   // use encode URLs middleware
   app.use(express.urlencoded({ extended: true }));
 
+  // load routes file (if used)
+  let loadedOptions = await routing.loadRoutes(serverOptions);
+  let routesFileChanged = false;
+
   // use generated http proxy middleware
-  let proxyMiddleware = proxy.getProxy(serverOptions);
+  let proxyMiddleware = proxy.getProxy(loadedOptions);
   app.use((...params) => {
     proxyMiddleware(...params);
   });
 
   // use generated router middleware
-  let { routerMiddleware, routesDisplayList, stats } = routing.getRouter(serverOptions);
+  let { routerMiddleware, routesDisplayList, stats } = routing.getRouter(loadedOptions);
   app.use((...params) => {
     routerMiddleware(...params);
   });
 
   // watch for changes (wait until ready, otherwise early file changes are missed)
-  await watcher.watch({ routes, database }, () => debouncedServerRestart(true));
+  await watcher.watch({ routes, database }, () => {
+    routesFileChanged = true;
+    debouncedServerRestart(true);
+  });
 
   // start server listening
   let server = ServerWrapper(app.listen(port), serverOptions, routesDisplayList, stats);
 
-  const debouncedServerRestart = debounce(
-    (...args) => server.destroy(() => handleServerRestart(...args)),
-    RESTART_DEBOUNCE
-  );
+  const debouncedServerRestart = debounce(async (...args) => {
+    // load routes only after a change (each load of ESM file stays in memory)
+    if (routesFileChanged) {
+      routesFileChanged = false;
+      loadedOptions = await routing.loadRoutes(serverOptions);
+    }
+    server.destroy(() => handleServerRestart(...args));
+  }, RESTART_DEBOUNCE);
 
   // create command-line shortcuts
   cli.shortcuts(() => {
@@ -78,16 +88,13 @@ async function amServer(options = {}) {
   function handleServerRestart(isFileChange = false) {
     setState({ isRestart: true });
 
-    // required files are cached in NodeJs -> clear cache
-    file.clearRequireCache(serverOptions.routes);
-
-    // regenerate middleware (files could be changed)
-    proxyMiddleware = proxy.getProxy(serverOptions);
+    // regenerate middleware (routes or suspended state could be changed)
+    proxyMiddleware = proxy.getProxy(loadedOptions);
     const {
       routerMiddleware: router,
       routesDisplayList: routes,
       stats,
-    } = routing.getRouter(serverOptions, isFileChange);
+    } = routing.getRouter(loadedOptions, isFileChange);
     routerMiddleware = router;
     routesDisplayList = routes;
 
