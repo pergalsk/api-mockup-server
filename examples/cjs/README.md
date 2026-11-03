@@ -11,9 +11,9 @@ npm start
 
 ## Try
 
-- GET http://localhost:9933/api/books/all - books list
-- GET http://localhost:9933/api/books/7 - book detail (any id)
-- POST http://localhost:9933/api/authors - status 400 with error message
+- GET http://localhost:9933/api/books/all - list of 6 books
+- GET http://localhost:9933/api/books/7 - book detail with author, tags and rating (any id)
+- POST http://localhost:9933/api/authors - status 400 with validation error
 
 ```
 curl http://localhost:9933/api/books/all

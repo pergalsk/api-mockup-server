@@ -1,4 +1,8 @@
 {
-  "errorCode": 15,
-  "errorMsg": "Book ID has wrong format."
+  "errorCode": "VALIDATION_ERROR",
+  "errorMsg": "Book has wrong format.",
+  "details": [
+    { "field": "year", "rule": "max", "limit": 2026 },
+    { "field": "title", "rule": "required" }
+  ]
 }

@@ -1,0 +1,9 @@
+[
+  { "id": 1, "name": "Daniel Defoe", "born": 1660, "died": 1731, "country": "England", "bookIds": [1, 10] },
+  { "id": 2, "name": "Miguel de Cervantes", "born": 1547, "died": 1616, "country": "Spain", "bookIds": [2] },
+  { "id": 3, "name": "Jane Austen", "born": 1775, "died": 1817, "country": "England", "bookIds": [3, 6, 11] },
+  { "id": 4, "name": "Herman Melville", "born": 1819, "died": 1891, "country": "USA", "bookIds": [4] },
+  { "id": 5, "name": "Mary Shelley", "born": 1797, "died": 1851, "country": "England", "bookIds": [5] },
+  { "id": 6, "name": "Robert Louis Stevenson", "born": 1850, "died": 1894, "country": "Scotland", "bookIds": [7, 8, 12] },
+  { "id": 7, "name": "Jonathan Swift", "born": 1667, "died": 1745, "country": "Ireland", "bookIds": [9] }
+]
