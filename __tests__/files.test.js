@@ -140,6 +140,108 @@ describe('routes file', () => {
   });
 });
 
+describe('wrong routes warnings', () => {
+  const cases = [
+    {
+      name: 'routes path does not exist',
+      options: `{ routes: './missing.cjs' }`,
+      expected: /WARNING: Routes file ".*missing\.cjs" not found/,
+    },
+    {
+      name: 'routes path is a folder',
+      options: `{ routes: './routes-dir' }`,
+      files: { 'routes-dir/file.txt': '' },
+      expected: /WARNING: Routes path ".*routes-dir" is not a file/,
+    },
+    {
+      name: 'routes file throws an error',
+      options: `{ routes: './routes.cjs' }`,
+      files: { 'routes.cjs': `throw new Error('boom from routes');\n` },
+      expected: /ERROR: Routes file ".*routes\.cjs" could not be loaded:\s+boom from routes/,
+    },
+    {
+      name: 'routes file has a syntax error',
+      options: `{ routes: './routes.mjs' }`,
+      files: { 'routes.mjs': `export default [{` },
+      expected: /ERROR: Routes file ".*routes\.mjs" could not be loaded:\s+\S+/,
+    },
+    {
+      name: 'routes file has a bad import',
+      options: `{ routes: './routes.mjs' }`,
+      files: { 'routes.mjs': `import './nope.mjs';\nexport default [];\n` },
+      expected: /ERROR: Routes file ".*routes\.mjs" could not be loaded:\s+.*nope\.mjs/,
+    },
+    {
+      name: 'routes file exports an object',
+      options: `{ routes: './routes.cjs' }`,
+      files: { 'routes.cjs': routesFile(`{ notAnArray: true }`) },
+      expected: /WARNING: Routes file ".*routes\.cjs" does not export an array/,
+    },
+    {
+      name: 'routes option is an object',
+      options: `{ routes: { path: '/v' } }`,
+      expected: /WARNING: Option "routes" must be a path to a file or an array \(got object\)/,
+    },
+    {
+      name: 'routes option is a number',
+      options: `{ routes: 42 }`,
+      expected: /WARNING: Option "routes" must be a path to a file or an array \(got number\)/,
+    },
+  ];
+
+  cases.forEach(({ name, options, files, expected }) => {
+    it(`logs a message and keeps running when ${name}`, async (t) => {
+      const server = await startServer({ options, files });
+      t.after(() => server.stop());
+
+      assert.match(server.output(), expected);
+      assert.equal((await server.fetch('/v')).status, 404);
+      assert.ok(server.isRunning());
+    });
+  });
+
+  it('logs no message when routes are correct', async (t) => {
+    const server = await startServer({
+      options: `{ routes: './routes.cjs' }`,
+      files: { 'routes.cjs': routesFile(`[{ active: true, path: '/v', data: { v: 1 } }]`) },
+    });
+    t.after(() => server.stop());
+
+    assert.doesNotMatch(server.output(), /Routes (file|path) ".*(not found|not a file|could not be|not export)/);
+  });
+
+  const reloadCases = [
+    {
+      name: 'throws an error',
+      content: `throw new Error('boom on reload');\n`,
+      expected: /ERROR: Routes file ".*routes\.cjs" could not be loaded:\s+boom on reload/,
+    },
+    {
+      name: 'does not export an array',
+      content: routesFile(`{ notAnArray: true }`),
+      expected: /WARNING: Routes file ".*routes\.cjs" does not export an array/,
+    },
+  ];
+
+  reloadCases.forEach(({ name, content, expected }) => {
+    it(`logs the same message on hot reload when the file ${name}`, async (t) => {
+      const server = await startServer({
+        options: `{ routes: './routes.cjs' }`,
+        files: { 'routes.cjs': routesFile(`[{ active: true, path: '/v', data: { v: 1 } }]`) },
+      });
+      t.after(() => server.stop());
+
+      assert.doesNotMatch(server.output(), expected);
+
+      server.writeFile('routes.cjs', content);
+
+      await waitFor(() => expected.test(server.output()));
+      await waitFor(async () => (await server.fetch('/v')).status === 404);
+      assert.ok(server.isRunning());
+    });
+  });
+});
+
 describe('database files', () => {
   it('serves data from <key>.json and <key>.<status>.json', async (t) => {
     const server = await startServer({
