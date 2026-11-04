@@ -361,6 +361,16 @@ Routes file can be CommonJS (`module.exports = [...]`) or ES module (`export def
 
 Note: Hot reload works with both. Only the routes file itself is reloaded, not the files it imports. Node.js can't remove an ES module from memory, so each reload of an ES module routes file keeps an old copy of the routes in memory.
 
+If routes can't be loaded, the server still starts, but without routes. It logs a warning or an error to the console when:
+
+- routes file is not found
+- routes path is not a file
+- routes file can't be loaded, e.g. it has a syntax error
+- routes file does not export an array
+- `routes` option is not a file path or an array
+
+If `routes` is a file path, just fix the file. The server loads it again without a restart.
+
 Example:
 
 ```javascript
