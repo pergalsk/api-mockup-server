@@ -18,10 +18,10 @@ The package can be loaded with both `require` and `import`:
 
 ```javascript
 // CommonJS
-const amServer = require('api-mockup-server');
+const apiMockupServer = require('api-mockup-server');
 
 // ES modules
-import amServer from 'api-mockup-server';
+import apiMockupServer from 'api-mockup-server';
 ```
 
 Examples in this README use ES modules, the same as the [examples](./examples) folder. Add `"type": "module"` to your `package.json`:
@@ -40,7 +40,7 @@ Create `server.js` file:
 // server.js
 
 // load API Mockup Server
-import amServer from 'api-mockup-server';
+import apiMockupServer from 'api-mockup-server';
 
 // define some routes
 const routes = [
@@ -78,7 +78,7 @@ const routes = [
 ];
 
 // start the server
-amServer({
+apiMockupServer({
   port: 9933,
   prefix: '/api',
   routes,
@@ -129,9 +129,9 @@ Main file with server configuration `./server.js`:
 
 ```javascript
 // server.js
-import amServer from 'api-mockup-server';
+import apiMockupServer from 'api-mockup-server';
 
-amServer({
+apiMockupServer({
   port: 9933,
   routes: './routes.js', // path to file with routes
   database: './db', // path to directory with data files
@@ -231,13 +231,13 @@ Server will listen on port 9933 (according to your configuration).
 ## Server configuration options
 
 ```javascript
-import amServer from 'api-mockup-server';
+import apiMockupServer from 'api-mockup-server';
 
 const serverConfigOptions = {
   // configuration properties are defined in the table below
 };
 
-amServer(serverConfigOptions);
+apiMockupServer(serverConfigOptions);
 ```
 
 <table>

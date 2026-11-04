@@ -1,4 +1,4 @@
-import amServer from 'api-mockup-server';
+import apiMockupServer from 'api-mockup-server';
 
 const routes = [
   {
@@ -46,7 +46,7 @@ const routes = [
   },
 ];
 
-amServer({
+apiMockupServer({
   port: process.env.PORT || 9933,
   routes,
   proxy: {
