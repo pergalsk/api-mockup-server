@@ -1,4 +1,4 @@
-const amServer = require('api-mockup-server');
+const apiMockupServer = require('api-mockup-server');
 
 // define some routes
 const routes = [
@@ -49,7 +49,7 @@ const routes = [
 ];
 
 // start the server
-amServer({
+apiMockupServer({
   port: process.env.PORT || 9933,
   prefix: '/api',
   routes,
