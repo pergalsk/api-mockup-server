@@ -1,6 +1,6 @@
-import amServer from 'api-mockup-server';
+import apiMockupServer from 'api-mockup-server';
 
-amServer({
+apiMockupServer({
   port: process.env.PORT || 9933,
   routes: './routes.js', // path to file with routes
   database: './db', // path to directory with data files
