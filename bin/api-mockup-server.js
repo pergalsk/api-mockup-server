@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import pkg from '../package.json' with { type: 'json' };
-import amServer from '../index.js';
+import apiMockupServer from '../index.js';
 import { parseCliArgs } from '../lib/args.js';
 import { loadConfig } from '../lib/config.js';
 import { debounce } from '../lib/utils.js';
@@ -45,8 +45,8 @@ async function main() {
     }
   }
 
-  // priority: CLI flag > config file > defaults (defaults are added by amServer)
-  const server = await amServer({ ...config, ...flags });
+  // priority: CLI flag > config file > defaults (defaults are added by apiMockupServer)
+  const server = await apiMockupServer({ ...config, ...flags });
 
   if (configPath) {
     const reloadConfig = debounce(async () => {

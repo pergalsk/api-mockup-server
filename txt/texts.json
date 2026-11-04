@@ -28,6 +28,7 @@
   "ERROR_IN_PROCESSING_JSON_DATA": "Error in processing modified JSON data. Returning unmodified response.",
   "ERROR_NO_PATH_FOUND_IN_CONFIG": "ERROR: No path found in route config item.",
   "ERROR_PORT_IN_USE": "ERROR: Port %port% is already in use. Please choose another port.",
+  "ERROR_ROUTES_FILE_NOT_LOADED": "ERROR: Routes file \"%path%\" could not be loaded:",
   "ERROR_WHILE_CLEARING_REQUIRE_CACHE": "ERROR: Clearing file cache went wrong for path: \"%path%\"",
   "ERROR_WHILE_READING_JSON_FILE": "ERROR: Wrong format in file with response data for key: \"%key%\"",
   "EXIT": "Exit",
@@ -91,5 +92,9 @@
   ],
   "WARNING_NO_VALID_METHOD": "WARNING: No valid method found in route config item.",
   "WARNING_PROXY_TARGET_REMOVED": "WARNING: Proxy target \"%target%\" is not in config anymore. Running without proxy, restart the server to choose a target.",
+  "WARNING_ROUTES_FILE_NOT_ARRAY": "WARNING: Routes file \"%path%\" does not export an array.",
+  "WARNING_ROUTES_FILE_NOT_FOUND": "WARNING: Routes file \"%path%\" not found.",
+  "WARNING_ROUTES_OPTION_INVALID": "WARNING: Option \"routes\" must be a path to a file or an array (got %type%).",
+  "WARNING_ROUTES_PATH_NOT_FILE": "WARNING: Routes path \"%path%\" is not a file.",
   "WITHOUT_PROXY": "Without proxy"
 }
