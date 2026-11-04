@@ -24,6 +24,14 @@ const amServer = require('api-mockup-server');
 import amServer from 'api-mockup-server';
 ```
 
+Examples in this README use ES modules, the same as the [examples](./examples) folder. Add `"type": "module"` to your `package.json`:
+
+```
+npm pkg set type=module
+```
+
+For CommonJS use `require` and `module.exports` - see the [cjs example](./examples/cjs).
+
 ## Quick start
 
 Create `server.js` file:
@@ -32,7 +40,7 @@ Create `server.js` file:
 // server.js
 
 // load API Mockup Server
-const amServer = require('api-mockup-server');
+import amServer from 'api-mockup-server';
 
 // define some routes
 const routes = [
@@ -89,15 +97,20 @@ Now, you can make 3 requests:
 - GET http://localhost:9933/api/books/7 - server will response with HTTP status 200 and return static data with book detail _(regardless of provided id, in this case 7)_
 - POST http://localhost:9933/api/authors - server will response with HTTP status 400 and return static data with error message _(regardless of provided POST request data)_
 
-More runnable examples (basic, extended, proxy, cjs) are in the [examples](./examples) folder.
+More runnable examples are in the [examples](./examples) folder:
+
+- [basic](./examples/basic) - inline routes (this quick start)
+- [extended](./examples/extended) - routes file, data files, callbacks, delay, hot reload
+- [proxy](./examples/proxy) - proxy targets list, mocked routes, proxy route interceptors
+- [cjs](./examples/cjs) - the basic example in CommonJS
 
 ## Advanced server configuration
 
 In bigger projects you don't want to store all of your routes and responses in one file. You can configure routes in separate file using `routes` param and responses in `database` param providing path to folder containing JSON files with response data.
 
-If you want to mockup only some of rest APIs you can use API Mockup Server as a mockup layer between your running back-end server and frontend application. In this scenario you have to configure proxy server target with running back-end. If you use more then one target, API Mockup Server will ask you to choose one target via CLI interface on server start.
+If you want to mockup only some of rest APIs you can use API Mockup Server as a mockup layer between your running back-end server and frontend application. In this scenario you have to configure proxy server target with running back-end. If you use more than one target, API Mockup Server will ask you to choose one target via CLI interface on server start. The list also includes a `Without proxy` option.
 
-Note 1: You don't have to restart the server when you make changes in routes config _(if path is defined)_ or data files. API Mockup Server will automatically reflect new configuration while running.
+Note 1: You don't have to restart the server when you make changes in data files or in routes file. API Mockup Server will automatically reflect new configuration while running. Hot reload of routes works only when `routes` is a file path. If `routes` is an inline array, you have to restart the server.
 
 Note 2: Server will add `x-api-mockup-server` header to all mocked/proxied responses with some metadata. You can turn it off by setting `mockHeader: false` in server options.
 
@@ -108,7 +121,7 @@ FILE STRUCTURE:
   /BOOKS_ALL.json          <- response data file (all statuses)
   /BOOK_DETAIL.json        <- response data file (statuses !== 400)
   /BOOK_DETAIL.400.json    <- response data file (HTTP status 400)
-paths.js                   <- routes definitions
+routes.js                  <- routes definitions
 server.js                  <- main server file
 ```
 
@@ -116,11 +129,11 @@ Main file with server configuration `./server.js`:
 
 ```javascript
 // server.js
-const amServer = require('api-mockup-server');
+import amServer from 'api-mockup-server';
 
 amServer({
   port: 9933,
-  routes: './paths.js', // path to file with routes
+  routes: './routes.js', // path to file with routes
   database: './db', // path to directory with data files
   prefix: '/api/v1',
   encoding: 'utf8',
@@ -136,14 +149,14 @@ amServer({
 
 In routes configuration you can instead of `data` param define `key` param which is used to find corresponding JSON file with response data.
 
-Add `./paths.js` file in the same directory:
+Add `./routes.js` file in the same directory:
 
 ```javascript
-// paths.js
-module.exports = [
+// routes.js
+export default [
   {
     active: true,
-    key: 'BOOKS_ALL', // response data file: ./db/POSTS_ALL.json
+    key: 'BOOKS_ALL', // response data file: ./db/BOOKS_ALL.json
     path: '/books/all',
     method: 'GET',
     status: 200,
@@ -218,7 +231,7 @@ Server will listen on port 9933 (according to your configuration).
 ## Server configuration options
 
 ```javascript
-const amServer = require('api-mockup-server');
+import amServer from 'api-mockup-server';
 
 const serverConfigOptions = {
   // configuration properties are defined in the table below
@@ -259,14 +272,14 @@ amServer(serverConfigOptions);
     <td><code>boolean</code></td>
     <td>
       <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS">Cross-Origin Resource Sharing</a> policy.
-      <br>Set to <code>false</code> if you don't wont it.
+      <br>Set to <code>false</code> if you don't want it.
     </td>
     <td><code>true</code></td>
   </tr>
   <tr>
     <td><b>delay</b><br><small><em>(optional)</em></small></td>
     <td><code>Object</code></td>
-    <td>Mocked response delay. Random delay will be generated between <code>min</code> and <code>max</code> values in milliseconds. If not set response will by served with additional delay.
+    <td>Mocked response delay. Random delay will be generated between <code>min</code> and <code>max</code> values in milliseconds. If not set response will be served without additional delay.
       <br>Example: <code>{ min: 500, max: 2500 }</code>
       <p>
         <br>If you want to define exact response time set <code>min</code> and <code>max</code> params to the same value.
@@ -286,7 +299,7 @@ amServer(serverConfigOptions);
     <td><code>true</code></td>
   </tr>
   <tr>
-    <td><b>routes</b><br><small><em>(mandatory)</em></small></td>
+    <td><b>routes</b><br><small><em>(optional)</em></small></td>
     <td><code>string | Array</code></td>
     <td>
       Definitions of API routes. It could be array or path to definition file. For more info about how routes should be configured look into <a href="#routes-configuration-options">routes options below.</a>
@@ -317,7 +330,7 @@ amServer(serverConfigOptions);
   <tr>
     <td><b>proxy</b><br><small><em>(optional)</em></small></td>
     <td><code>Object</code></td>
-    <td>Proxy server configuration. Undefined or not active routes will be redirected to proxy target. If server is defined as an array, on the start the interactive CLI will ask you to choose from given list of server addresses.
+    <td>Proxy server configuration. Undefined or not active routes will be redirected to proxy target. If server is defined as an array, on the start the interactive CLI will ask you to choose from given list of server addresses. The list also includes a <code>Without proxy</code> option.
       <br>Target can be a string (URL) or an object with <code>url</code> (required) and <code>title</code> (optional). Strings and objects can be mixed in one array. Target with title is shown as <code>title - url</code> in CLI list and config output. Invalid target (no <code>url</code> or <code>url</code> is not a string) is skipped with a warning.
       <br>Examples: 
 <pre>{ 
@@ -351,7 +364,7 @@ Note: Hot reload works with both. Only the routes file itself is reloaded, not t
 Example:
 
 ```javascript
-module.exports = [
+export default [
   {
     active: true,
     path: '/books/all',
@@ -432,10 +445,18 @@ module.exports = [
   </tr>
 
   <tr>
+    <td><b>delay</b><br><small><em>(optional)</em></small></td>
+    <td><code>number</code></td>
+    <td>Exact response delay of this route in milliseconds. It overrides global <code>delay</code> defined in server configuration. Value <code>0</code> does not turn the delay off - global <code>delay</code> is used.
+    <br><br>Example: <code>1500</code></td>
+    <td><code>null</code></td>
+  </tr>
+
+  <tr>
     <td><b>data</b><br><em><small>(optional)</small></em></td>
     <td><code>Object</code></td>
     <td>
-      Response data. If you have bigger amount of data it could be replaced with <code>key</code> option (bellow)
+      Response data. If you have bigger amount of data it could be replaced with <code>key</code> option (below)
       <br><br>Example:
 <pre>
 data: { 
@@ -481,7 +502,7 @@ AUTHOR_EDIT.500.json
     <td><b>applyIf</b><br><small><em>(optional)</em></small></td>
     <td><code>Function</code></td>
     <td>
-      Decide whether route should be mocked or not. Return <code>true</code> if route should not be proxyied but returned as defined JSON data mockup. It's useful when you want to proxy route only if some conditions are met. <code>applyIf</code> has lower priority than param <code>active</code>. 
+      Decide whether route should be mocked or not. Return <code>true</code> if route should not be proxied but returned as defined JSON data mockup. It's useful when you want to proxy route only if some conditions are met. <code>applyIf</code> has lower priority than param <code>active</code>. 
       <br><br>Function parameter is one object with properties:
       <ul>
         <li><code>params</code> - request URL params</li>
@@ -540,7 +561,7 @@ If you have configured proxy target you can intercept and modify data by omittin
 Example:
 
 ```javascript
-module.exports = [
+export default [
   {
     active: true,
     path: '/user/:id',
@@ -556,9 +577,11 @@ module.exports = [
 
 This route will intercept and change data from proxy target for GET <code>/user/:id</code> requests.
 
+Note: Interceptors work only for responses with `application/json` content type. Other responses pass unchanged.
+
 ## CLI shortcuts
 
-The server now supports interactive keyboard shortcuts in supported terminals. Shortcuts include:
+The server supports interactive keyboard shortcuts in supported terminals. Shortcuts include:
 
 - `r` — List configured routes
 - `c` — Config (port, prefix, proxy target)
