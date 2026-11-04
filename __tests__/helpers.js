@@ -7,6 +7,7 @@ import nodePath from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const PKG_DIR = nodePath.resolve(nodePath.dirname(fileURLToPath(import.meta.url)), '..');
+const BIN_PATH = nodePath.join(PKG_DIR, 'bin', 'api-mockup-server.js');
 const WAIT_TIMEOUT_MS = 10000;
 const POLL_INTERVAL_MS = 100;
 
@@ -94,12 +95,25 @@ async function startExample(name, env = {}) {
 }
 
 /**
+ * Starts the command-line tool in a child process.
+ * @param {Object} params
+ * @param {number} params.port port on which the server is expected to listen
+ * @param {string[]} params.args command-line arguments
+ * @param {Object<string, string>} [params.files] fixture files (config, routes, db, ...)
+ * @returns {Promise<Object>} server handle (same as startServer)
+ */
+async function startCli({ port, args, files = {} }) {
+  const dir = createFixture(files);
+  return runServer({ dir, port, scriptName: BIN_PATH, args });
+}
+
+/**
  * Runs server script in a child process and waits until it responds.
  * @returns {Promise<Object>} server handle: { port, dir, url(), fetch(), writeFile(), output(), stop() }
  */
-async function runServer({ dir, port, scriptName, env = {} }) {
+async function runServer({ dir, port, scriptName, args = [], env = {} }) {
   let output = '';
-  const child = spawn(process.execPath, [scriptName], {
+  const child = spawn(process.execPath, [scriptName, ...args], {
     cwd: dir,
     stdio: 'pipe',
     env: { ...process.env, ...env },
@@ -192,4 +206,4 @@ async function startUpstream(extra = {}) {
   };
 }
 
-export { getFreePort, startServer, startExample, startUpstream, waitFor };
+export { BIN_PATH, getFreePort, startServer, startExample, startCli, startUpstream, waitFor };

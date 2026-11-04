@@ -556,6 +556,67 @@ module.exports = [
 
 This route will intercept and change data from proxy target for GET <code>/user/:id</code> requests.
 
+## Command line
+
+You can start the server without writing `server.js`:
+
+```
+npx api-mockup-server --port 3000 --routes ./routes.js --database ./db
+```
+
+| Flag               | Short | Meaning                                           |
+| ------------------ | ----- | ------------------------------------------------- |
+| `--config <file>`  | `-c`  | Config file (`.js`, `.cjs`, `.mjs` or `.json`).   |
+| `--port <n>`       | `-p`  | Port.                                             |
+| `--routes <file>`  | `-r`  | Routes file.                                      |
+| `--database <dir>` | `-d`  | Data folder.                                      |
+| `--prefix <path>`  | `-f`  | Global prefix.                                    |
+| `--proxy <url>`    | `-x`  | One proxy target URL.                             |
+| `--help`           | `-h`  | Show help.                                        |
+| `--version`        | `-v`  | Show version.                                     |
+
+Priority: CLI flag > config file > defaults. If `--proxy` is set, it replaces `proxy.server` from the config file.
+
+### Config file
+
+The config file has the same options as [server configuration](#server-configuration-options). Use it for options without a flag (`delay`, `cors`, `mockHeader`, `encoding`). It is loaded only with `--config`, there is no default file name.
+
+```javascript
+// mock.config.mjs
+export default {
+  port: 3000,
+  routes: './routes.js',
+  database: './db',
+  delay: { min: 500, max: 2500 },
+};
+```
+
+```
+npx api-mockup-server --config mock.config.mjs
+```
+
+A JSON config file looks the same, with `routes` as a path or a list of routes:
+
+```json
+{
+  "port": 3000,
+  "routes": "./routes.js",
+  "database": "./db"
+}
+```
+
+Relative paths (`routes`, `database`) are relative to the current folder, not to the config file.
+
+### Config hot reload
+
+When the config file changes, the server reads it again and restarts. CLI flags still win over the new values.
+
+- If the new config is broken, the server shows a warning and keeps the old config.
+- If the new `port` is already in use, the server shows an error and stops.
+- There is no interactive proxy choice on reload. With one target in the new config, that target is used. With a list, the current target stays if it is still in the list, otherwise the server runs without proxy (restart it to choose a target).
+
+Note: Each reload of a config file loaded as ES module keeps an old copy of it in memory (same as [routes file](#routes-configuration-options)).
+
 ## CLI shortcuts
 
 The server now supports interactive keyboard shortcuts in supported terminals. Shortcuts include:
