@@ -513,6 +513,7 @@ AUTHOR_EDIT.500.json
     <td><code>Function</code></td>
     <td>
       Decide whether route should be mocked or not. Return <code>true</code> if route should not be proxied but returned as defined JSON data mockup. It's useful when you want to proxy route only if some conditions are met. <code>applyIf</code> has lower priority than param <code>active</code>. 
+      <br><br><code>applyIf</code> only matters when a proxy target is set. Without a proxy (or when running without proxy) it is not called and the route always returns its mock data.
       <br><br>Function parameter is one object with properties:
       <ul>
         <li><code>params</code> - request URL params</li>
@@ -523,7 +524,7 @@ AUTHOR_EDIT.500.json
       Return value should be boolean:
       <ul>
         <li><code>true</code> - if you want your route to be handled by mockup server</li>
-        <li><code>false</code> - if you want to pass request to proxy target (if configured - otherwise empty response will be returned)</li>
+        <li><code>false</code> - if you want to pass request to proxy target</li>
       </ul>
       <br>Example:
 <pre>
