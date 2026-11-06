@@ -41,7 +41,7 @@
     "chokidar": "^3.6.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "http-proxy-middleware": "^2.0.9",
+    "http-proxy-middleware": "^4.2.1",
     "inquirer": "^8.2.7",
     "path-to-regexp": "^6.3.0"
   },

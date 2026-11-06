@@ -94,6 +94,49 @@ describe('proxy', () => {
     });
     assert.equal(res.status, 200);
     assert.deepEqual(upstream.requests.at(-1), { method: 'POST', url: '/api/items' });
+    assert.deepEqual(JSON.parse(upstream.bodies.at(-1)), { name: 'x' });
+  });
+
+  it('proxies PUT requests with JSON and urlencoded body', async (t) => {
+    const { server, upstream } = await startWithProxy(t, `[]`);
+
+    await server.fetch('/api/items/1', {
+      method: 'PUT',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ name: 'y' }),
+    });
+    assert.deepEqual(upstream.requests.at(-1), { method: 'PUT', url: '/api/items/1' });
+    assert.deepEqual(JSON.parse(upstream.bodies.at(-1)), { name: 'y' });
+
+    await server.fetch('/api/items/2', {
+      method: 'PUT',
+      headers: { 'content-type': 'application/x-www-form-urlencoded' },
+      body: 'a=1&b=two',
+    });
+    assert.equal(upstream.bodies.at(-1), 'a=1&b=two');
+  });
+
+  it('passes POST body to interceptor callback', async (t) => {
+    const { server, upstream } = await startWithProxy(
+      t,
+      `[{ active: true, method: 'POST', path: '/items', callback: ({ data, body }) => ({ ...data, body }) }]`
+    );
+
+    const res = await server.fetch('/api/items', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ name: 'z' }),
+    });
+    assert.deepEqual((await res.json()).body, { name: 'z' });
+    assert.deepEqual(JSON.parse(upstream.bodies.at(-1)), { name: 'z' });
+    assert.equal(res.headers.get('x-api-mockup-server'), 'proxy,intercept');
+  });
+
+  it('proxies without util._extend deprecation warning (DEP0060)', async (t) => {
+    const { server } = await startWithProxy(t, `[]`);
+
+    await server.fetch('/api/other');
+    assert.doesNotMatch(server.output(), /DEP0060/);
   });
 
   it('uses single object server without CLI choice and shows its title', async (t) => {
