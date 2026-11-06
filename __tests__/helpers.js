@@ -187,12 +187,18 @@ async function waitFor(fn, timeout = WAIT_TIMEOUT_MS) {
 /**
  * Starts a fake upstream server for proxy tests. Responds with JSON describing the request.
  * @param {Object} [extra] extra fields added to every response
- * @returns {Promise<Object>} { url, requests, stop() }
+ * @returns {Promise<Object>} { url, requests, bodies, stop() }
  */
 async function startUpstream(extra = {}) {
   const requests = [];
-  const srv = nodeHttp.createServer((req, res) => {
+  const bodies = [];
+  const srv = nodeHttp.createServer(async (req, res) => {
     requests.push({ method: req.method, url: req.url });
+    let body = '';
+    for await (const chunk of req) {
+      body += chunk;
+    }
+    bodies.push(body);
     res.setHeader('content-type', 'application/json');
     res.end(JSON.stringify({ from: 'upstream', method: req.method, url: req.url, ...extra }));
   });
@@ -202,7 +208,8 @@ async function startUpstream(extra = {}) {
   return {
     url: `http://localhost:${port}`,
     requests,
-    stop: () => new Promise((resolve) => srv.close(resolve)),
+    bodies,
+    stop:() => new Promise((resolve) => srv.close(resolve)),
   };
 }
 
