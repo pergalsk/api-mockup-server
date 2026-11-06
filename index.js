@@ -11,17 +11,24 @@ import * as cli from './lib/cli.js';
 import * as log from './lib/log.js';
 import { debounce } from './lib/utils.js';
 
-import { RESTART_DEBOUNCE } from './lib/constants.js';
+import { RESTART_DEBOUNCE, NEW_LINE } from './lib/constants.js';
 
+/**
+ * Starts API Mockup Server.
+ * @param {Object} [options] server options
+ * @returns {Promise<{port: number, url: string, close: () => Promise<void>}>}
+ *  resolves when the server listens, rejects when it can't start (e.g. port in use)
+ */
 async function amServer(options = {}) {
-  log.appStart();
-
   let serverOptions = { ...defaultOptions.server, ...options };
   let newServerOptions = null;
 
-  // get proxy target from user selection
-  const target = await cli.getProxyTarget(serverOptions.proxy);
-  setState({ target });
+  log.setSilent(serverOptions.silent);
+  log.appStart();
+
+  // get proxy target from user selection (state is reset, previous server could change it)
+  const target = await cli.getProxyTarget(serverOptions.proxy, serverOptions.interactive !== false);
+  setState({ target, suspended: null, isRestart: false });
 
   // create express application
   const app = express();
@@ -64,10 +71,31 @@ async function amServer(options = {}) {
   };
   let closeWatchers = await startWatchers();
 
-  // start server listening
-  let server = ServerWrapper(app.listen(serverOptions.port), serverOptions, routesDisplayList, stats);
+  let server = null;
+  let port = null; // real port (differs from options with port 0)
+  let isClosed = false;
+  let closing = null;
+  let resolveClosed;
+  const closed = new Promise((resolve) => (resolveClosed = resolve));
+
+  // starts server listening, port 0 is used only for the first start (then the same port is kept)
+  async function listen() {
+    server = ServerWrapper(app.listen(serverOptions.port || port || 0), serverOptions, routesDisplayList, stats);
+    await server.listening;
+    port = server.server.address().port;
+  }
+
+  try {
+    await listen();
+  } catch (e) {
+    await closeWatchers();
+    throw e;
+  }
 
   const debouncedServerRestart = debounce(async (...args) => {
+    if (isClosed) {
+      return;
+    }
     if (newServerOptions) {
       await applyNewServerOptions();
     }
@@ -79,10 +107,10 @@ async function amServer(options = {}) {
     server.destroy(() => handleServerRestart(...args));
   }, RESTART_DEBOUNCE);
 
-  // create command-line shortcuts
-  cli.shortcuts(() => {
+  // create command-line shortcuts (only with `interactive` option and TTY)
+  const getShortcutParams = () => {
     return {
-      serverOptions,
+      serverOptions: { ...serverOptions, port },
       routesDisplayList,
       callbacks: {
         suspend: () => {
@@ -92,7 +120,28 @@ async function amServer(options = {}) {
         },
       },
     };
-  });
+  };
+  const closeShortcuts = cli.hasShortcuts(serverOptions)
+    ? cli.shortcuts(getShortcutParams, () => close())
+    : () => {};
+
+  /**
+   * Stops the server, file watchers and keyboard shortcuts.
+   * @param {Error} [error] reason when the server stops itself (e.g. port in use after restart)
+   * @returns {Promise<void>}
+   */
+  function close(error) {
+    if (!closing) {
+      isClosed = true;
+      closing = (async () => {
+        closeShortcuts();
+        await closeWatchers();
+        await new Promise((resolve) => server.destroy(resolve));
+        resolveClosed(error);
+      })();
+    }
+    return closing;
+  }
 
   async function applyNewServerOptions() {
     const { routes, database } = serverOptions;
@@ -107,11 +156,15 @@ async function amServer(options = {}) {
       closeWatchers = await startWatchers();
     }
 
-    const { prefix, port } = serverOptions;
-    log.serverConfig(prefix, proxy.getProxyTargetText(serverOptions), port);
+    const { prefix } = serverOptions;
+    log.serverConfig(prefix, proxy.getProxyTargetText(serverOptions), serverOptions.port || port);
   }
 
-  function handleServerRestart(isFileChange = false) {
+  async function handleServerRestart(isFileChange = false) {
+    if (isClosed) {
+      return;
+    }
+
     setState({ isRestart: true });
 
     // regenerate middleware (routes or suspended state could be changed)
@@ -125,10 +178,30 @@ async function amServer(options = {}) {
     routesDisplayList = routes;
 
     // re-create server (port could be changed by new options)
-    server = ServerWrapper(app.listen(serverOptions.port), serverOptions, routesDisplayList, stats);
+    try {
+      await listen();
+    } catch (e) {
+      log.error(NEW_LINE + e.message);
+      await close(e);
+      return;
+    }
+
+    // close() was called while the new server was starting
+    if (isClosed) {
+      server.destroy();
+    }
   }
 
   return {
+    get port() {
+      return port;
+    },
+    get url() {
+      return `http://localhost:${port}`;
+    },
+    close: () => close(),
+    // used by the command-line tool: resolves when the server is closed (with error if it failed)
+    closed,
     // used by the command-line tool when the config file changes
     reconfigure: (options) => {
       newServerOptions = { ...defaultOptions.server, ...options };

@@ -245,8 +245,20 @@ apiMockupServer(serverConfigOptions);
   <tr>
     <td><b>port</b><br><small><em>(optional)</em></small></td>
     <td><code>number</code></td>
-    <td>The port on which mock server will listen.</td>
+    <td>The port on which mock server will listen. Use <code>0</code> for a random free port (see <a href="#use-in-tests">Use in tests</a>).</td>
     <td><code>9933</code></td>
+  </tr>
+  <tr>
+    <td><b>interactive</b><br><small><em>(optional)</em></small></td>
+    <td><code>boolean</code></td>
+    <td>Set to <code>false</code> to turn off <a href="#cli-shortcuts">keyboard shortcuts</a> and the proxy target prompt (the first target from the list is used). Shortcuts are also off when no terminal (TTY) is attached.</td>
+    <td><code>true</code></td>
+  </tr>
+  <tr>
+    <td><b>silent</b><br><small><em>(optional)</em></small></td>
+    <td><code>boolean</code></td>
+    <td>Set to <code>true</code> to turn off all console logs.</td>
+    <td><code>false</code></td>
   </tr>
   <tr>
     <td><b>database</b><br><small><em>(optional)</em></small></td>
@@ -657,6 +669,44 @@ This route will intercept and change data from proxy target for GET <code>/user/
 
 Note: Interceptors work only for responses with `application/json` content type. Other responses pass unchanged.
 
+## Use in tests
+
+`apiMockupServer()` returns a Promise. It resolves when the server listens, with a server handle:
+
+- `port` - real port (useful with `port: 0` = random free port)
+- `url` - e.g. `http://localhost:51234`
+- `close()` - stops the server, file watchers and keyboard shortcuts, returns a Promise
+
+`port` and `url` stay the same after hot reload restart. If the port is already in use, the Promise rejects with an error (`code: 'EADDRINUSE'`), it does not end the process.
+
+Example with `node:test` (works the same in Vitest, Jest or Playwright):
+
+```javascript
+import { before, after, it } from 'node:test';
+import assert from 'node:assert/strict';
+import apiMockupServer from 'api-mockup-server';
+
+let server;
+
+before(async () => {
+  server = await apiMockupServer({
+    port: 0,
+    routes: [{ active: true, path: '/books', data: [{ id: 1 }] }],
+    interactive: false,
+    silent: true,
+  });
+});
+
+after(() => server.close());
+
+it('returns books', async () => {
+  const res = await fetch(`${server.url}/books`);
+  assert.deepEqual(await res.json(), [{ id: 1 }]);
+});
+```
+
+Note: Run one server per process at a time. Servers share some state (e.g. suspended mocking, proxy target), so two servers running at the same time in one process can affect each other. Starting a new server after `close()` is fine.
+
 ## Command line
 
 You can start the server without writing `server.js`:
@@ -720,7 +770,7 @@ Note: Each reload of a config file loaded as ES module keeps an old copy of it i
 
 ## CLI shortcuts
 
-The server supports interactive keyboard shortcuts in supported terminals. Shortcuts include:
+The server supports interactive keyboard shortcuts in supported terminals (TTY). They are off with `interactive: false` option. Shortcuts include:
 
 - `r` — List configured routes
 - `c` — Config (port, prefix, proxy target)
