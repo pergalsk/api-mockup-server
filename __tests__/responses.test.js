@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
-import { startServer } from './helpers.js';
+import { startServer, waitFor } from './helpers.js';
 
 const PNG_BYTES = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
 
@@ -119,5 +119,32 @@ describe('response headers and content type', () => {
 
     const res = await server.fetch('/both');
     assert.deepEqual(await res.json(), { json: true });
+  });
+});
+
+describe('empty response warnings', () => {
+  const cases = [
+    {
+      name: 'no data file is found for the key',
+      files: {},
+    },
+    {
+      name: 'the JSON data file has a wrong format',
+      files: { 'database/MISSING.json': '{ not json' },
+    },
+  ];
+
+  cases.forEach(({ name, files }) => {
+    it(`logs the route path when ${name}`, async (t) => {
+      const server = await startServer({
+        options: `{ prefix: '/api', routes: [{ active: true, path: '/empty', key: 'MISSING' }] }`,
+        files,
+      });
+      t.after(() => server.stop());
+
+      await server.fetch('/api/empty');
+      await waitFor(() => server.output().includes('Route "/api/empty" will be served with empty response.'));
+      assert.doesNotMatch(server.output(), /%path%/);
+    });
   });
 });
