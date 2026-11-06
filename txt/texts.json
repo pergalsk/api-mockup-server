@@ -73,7 +73,8 @@
   "WARNING_FILES_RESPONSE_DATA_NOT_FOUND": [
     "WARNING: Files with response data for key: %key% not found:",
     "\"%filePathWithStatus%\"",
-    "\"%filePathDefault%\""
+    "\"%filePathDefault%\"",
+    "\"%filePathOther%\""
   ],
   "WARNING_INVALID_METHOD": "WARNING: Invalid method (%method%) found in route config item.",
   "WARNING_INVALID_PROXY_TARGET": "WARNING: Invalid proxy target skipped (url must be a string): %target%",
@@ -92,6 +93,7 @@
   ],
   "WARNING_NO_VALID_METHOD": "WARNING: No valid method found in route config item.",
   "WARNING_PROXY_TARGET_REMOVED": "WARNING: Proxy target \"%target%\" is not in config anymore. Running without proxy, restart the server to choose a target.",
+  "WARNING_RESPONSE_FILE_NOT_SENT": "WARNING: Response file \"%file%\" was not sent: %message%",
   "WARNING_ROUTES_FILE_NOT_ARRAY": "WARNING: Routes file \"%path%\" does not export an array.",
   "WARNING_ROUTES_FILE_NOT_FOUND": "WARNING: Routes file \"%path%\" not found.",
   "WARNING_ROUTES_OPTION_INVALID": "WARNING: Option \"routes\" must be a path to a file or an array (got %type%).",

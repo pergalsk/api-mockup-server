@@ -480,6 +480,37 @@ data: {
   </tr>
 
   <tr>
+    <td><b>headers</b><br><em><small>(optional)</small></em></td>
+    <td><code>Object</code></td>
+    <td>
+      Response headers added to the response. They win over global <code>headers</code> from server configuration.
+      <br><br>Example: <code>{ Location: '/books/30', 'X-Total-Count': '3' }</code>
+    </td>
+    <td><code>null</code></td>
+  </tr>
+
+  <tr>
+    <td><b>contentType</b><br><em><small>(optional)</small></em></td>
+    <td><code>string</code></td>
+    <td>
+      Response content type. String <code>data</code> is sent as it is (not converted to JSON string).
+      <br>For a file response the type comes from the file extension, unless <code>contentType</code> is set.
+      <br><br>Example: <code>"text/plain"</code>
+    </td>
+    <td><code>"application/json"</code></td>
+  </tr>
+
+  <tr>
+    <td><b>file</b><br><em><small>(optional)</small></em></td>
+    <td><code>string</code></td>
+    <td>
+      Path to a file sent as the response (image, PDF, text, ...). Path is relative to the current working directory. Used only when <code>data</code> is not set. <code>callback</code> is not called for file responses. If the file is missing, an empty body is sent.
+      <br><br>Example: <code>"./files/cover.png"</code>
+    </td>
+    <td><code>null</code></td>
+  </tr>
+
+  <tr>
     <td><b>key</b><br><small><em>(optional)</em></small></td>
     <td><code>string</code></td>
     <td>Param will be used for searching for a file with response data (in JSON format) in defined database folder. You could store response data in a folder defined by <code>database</code> param with filename used as <code>key</code> with <code>.json</code> extension. Server will find that file and return content as JSON response. You can define different data (in separate files) for each HTTP status code using extension prefix. API Mockup Server uses <code>key</code> also as an ID in console log for identifying which route was handled/intercepted or which has an error.
@@ -502,6 +533,7 @@ AUTHOR_EDIT.202.json
 AUTHOR_EDIT.400.json
 AUTHOR_EDIT.500.json
 </pre>
+      <br>If no JSON file is found, server looks for a non-JSON file named <code>KEY.&lt;extension&gt;</code> (e.g. <code>BOOK_COVER.png</code>, <code>FEED.xml</code>) and sends it as it is. Content type comes from the extension. There is no status suffix for these files. JSON file always wins. See <a href="#response-headers-and-non-json-responses">non-JSON responses</a>.
 
 </td>
 <td><code>""</code></td>
@@ -564,6 +596,41 @@ callback: (props) => {
   </tr>
 
 </table>
+
+## Response headers and non-JSON responses
+
+By default every mocked response is JSON. Routes can also set headers, send other content types, empty bodies and files.
+
+```javascript
+apiMockupServer({
+  // global headers, added to every mocked response (route headers win)
+  headers: { 'Cache-Control': 'no-store' },
+  routes: [
+    {
+      active: true,
+      path: '/books',
+      method: 'POST',
+      status: 201,
+      headers: { Location: '/books/30' },
+      contentType: 'text/plain',
+      data: 'Created',
+    },
+    // status 204 (and 304) always sends no body
+    { active: true, path: '/books/:id', method: 'DELETE', status: 204 },
+    // file response, content type from extension (image/png)
+    { active: true, path: '/books/:id/cover', file: './files/cover.png' },
+    // looks for database/BOOKS_FEED.json first, then database/BOOKS_FEED.<extension>
+    { active: true, path: '/books/feed', key: 'BOOKS_FEED' },
+  ],
+});
+```
+
+Notes:
+
+- Header `x-api-mockup-server` is still added (see `mockHeader` option).
+- Response data order: `data` → `file` → JSON file by `key` → non-JSON file by `key`.
+- If there are more non-JSON files with the same key (e.g. `KEY.txt` and `KEY.xml`), the first one in alphabetical order is used.
+- `callback` is not called for file responses.
 
 ## Proxy route interceptors
 
