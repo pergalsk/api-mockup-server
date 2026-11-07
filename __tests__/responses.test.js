@@ -148,3 +148,29 @@ describe('empty response warnings', () => {
     });
   });
 });
+
+describe('route status', () => {
+  it('accepts string status without Express deprecation warning', async (t) => {
+    const server = await startServer({
+      options: `{ routes: [{ active: true, path: '/created', method: 'POST', status: '201', data: { id: 1 } }] }`,
+    });
+    t.after(() => server.stop());
+
+    const res = await server.fetch('/created', { method: 'POST' });
+    assert.equal(res.status, 201);
+    assert.deepEqual(await res.json(), { id: 1 });
+    await waitFor(() => /POST.*\/created.*ms/.test(server.output()));
+    assert.doesNotMatch(server.output(), /deprecated/i);
+  });
+
+  it('does not register route with invalid status', async (t) => {
+    const server = await startServer({
+      options: `{ routes: [{ active: true, path: '/bad', status: 'abc', data: { x: 1 } }] }`,
+    });
+    t.after(() => server.stop());
+
+    assert.match(server.output(), /Invalid status \(abc\)/);
+    const res = await server.fetch('/bad');
+    assert.equal(res.status, 404);
+  });
+});
