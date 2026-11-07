@@ -174,4 +174,12 @@ describe('proxy', () => {
     assert.match(server.output(), /Invalid proxy target skipped/);
     await waitFor(() => server.output().includes('Not configured.'));
   });
+
+  it('proxies path of route with invalid status (route is not registered)', async (t) => {
+    const { server } = await startWithProxy(t, `[{ active: true, path: '/bad', status: 'abc', data: { x: 1 } }]`);
+
+    const res = await server.fetch('/api/bad');
+    assert.equal((await res.json()).from, 'upstream');
+    assert.equal(res.headers.get('x-api-mockup-server'), 'proxy');
+  });
 });

@@ -78,6 +78,7 @@
   ],
   "WARNING_INVALID_METHOD": "WARNING: Invalid method (%method%) found in route config item.",
   "WARNING_INVALID_PROXY_TARGET": "WARNING: Invalid proxy target skipped (url must be a string): %target%",
+  "WARNING_INVALID_STATUS": "WARNING: Invalid status (%status%) found in route config item. Use a number from 100 to 599.",
   "WARNING_MISSING_ROUTE_DEFINITIONS_SERVER_ACTIVE": [
     "No active routes defined. All requests will be redirected to proxy server."
   ],
