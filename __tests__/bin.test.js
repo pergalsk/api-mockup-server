@@ -236,6 +236,29 @@ describe('command-line: config hot reload', () => {
     await waitFor(() => server.output().includes(`Server port:   ${newPort}`));
   });
 
+  it('logs new server config only when the new server listens', async (t) => {
+    const port = await getFreePort();
+    const server = await startCli({
+      port,
+      args: ['-c', 'config.json'],
+      files: {
+        'config.json': jsonConfig({ port, prefix: '/one', routes: 'routes.cjs' }),
+        'routes.cjs': routesFile({ v: 1 }),
+      },
+    });
+    t.after(() => server.stop());
+
+    server.writeFile('config.json', jsonConfig({ port, prefix: '/two', routes: 'routes.cjs' }));
+
+    // check output often, so the request is sent right after the log line
+    const end = Date.now() + 10000;
+    while (server.output().match(/Proxy target:/g).length < 2 && Date.now() < end) {
+      await new Promise((resolve) => setImmediate(resolve));
+    }
+    // single request, no retry
+    assert.deepEqual(await getJson(server, '/two/v'), { v: 1 });
+  });
+
   it('stops with an error when the new port is already in use', async (t) => {
     const upstream = await startUpstream();
     t.after(() => upstream.stop());
