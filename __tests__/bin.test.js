@@ -329,7 +329,7 @@ describe('command-line: config hot reload', () => {
     );
     await waitFor(() => server.output().match(/has been changed/g).length === 2);
     await waitFor(() => server.output().match(/Proxy target:/g).length === 3);
-    assert.equal((await getJson(server, '/x')).name, 'second');
+    await waitFor(async () => (await getJson(server, '/x')).name === 'second');
 
     // current target was removed and there is more targets: no proxy, with warning
     server.writeFile(
