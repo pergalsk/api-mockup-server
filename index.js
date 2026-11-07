@@ -48,6 +48,7 @@ async function amServer(options = {}) {
   // load routes file (if used)
   let loadedOptions = await routing.loadRoutes(serverOptions);
   let routesFileChanged = false;
+  let serverConfigChanged = false;
 
   // use generated http proxy middleware
   let proxyMiddleware = proxy.getProxy(loadedOptions);
@@ -156,8 +157,8 @@ async function amServer(options = {}) {
       closeWatchers = await startWatchers();
     }
 
-    const { prefix } = serverOptions;
-    log.serverConfig(prefix, proxy.getProxyTargetText(serverOptions), serverOptions.port || port);
+    // server config is logged after the new server listens
+    serverConfigChanged = true;
   }
 
   async function handleServerRestart(isFileChange = false) {
@@ -189,6 +190,9 @@ async function amServer(options = {}) {
     // close() was called while the new server was starting
     if (isClosed) {
       server.destroy();
+    } else if (serverConfigChanged) {
+      serverConfigChanged = false;
+      log.serverConfig(serverOptions.prefix, proxy.getProxyTargetText(serverOptions), port);
     }
   }
 
