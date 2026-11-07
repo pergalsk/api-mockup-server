@@ -1,21 +1,24 @@
 ### TODO
 
+Open work is tracked in [GitHub issues](https://github.com/pergalsk/api-mockup-server/issues).
+Done work is listed in [CHANGELOG.md](CHANGELOG.md).
+
+**Release**
+
+- release 5.0.0 to npm (#5)
+
 **Fix**
 
-- make it more robust against wrong settings
-  - e.g. avoid error when wrong routes file: TypeError: getAllRoutes(...).filter is not a function
-- (node:22272) [DEP0060] DeprecationWarning: The `util._extend` API is deprecated. Please use Object.assign() instead.
-  (Use `node --trace-deprecation ...` to show where the warning was created)
+- flaky test: 'listens on the new port' (ECONNREFUSED, probably free port race between test files)
+- replace deprecated Node.js `querystring` (lib/proxy.js)
 
 **Features**
 
-- custom route database
-  - { database: './custom/folder' }
-- better readme file - make examples more compatible to each other
-- include routes via require in config
-- command-line params: port, database folder (APIs for different projects)
+- generate TypeScript types from JSDoc (#47)
+- more detailed mock response header value (proxy, static, dynamic, file, inline, delay) (lib/proxy.js)
 
-**Dev**
+**Ideas (need planning)**
 
-- ES modules
-- tests
+- record mode: save real proxy responses into database files (mocks without writing JSON by hand)
+- import routes from OpenAPI spec
+- request log or simple web UI
