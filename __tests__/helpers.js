@@ -152,7 +152,7 @@ async function runServer({ dir, port, scriptName, args = [], env = {} }) {
     });
   } catch (e) {
     await server.stop();
-    throw new Error(`Server did not start: ${e.message}\n${output}`);
+    throw new Error(`Server did not start: ${e.message}\n${output}`, { cause: e });
   }
 
   return server;
