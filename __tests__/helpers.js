@@ -213,4 +213,4 @@ async function startUpstream(extra = {}) {
   };
 }
 
-export { BIN_PATH, getFreePort, startServer, startExample, startCli, startUpstream, waitFor };
+export { BIN_PATH, createFixture, getFreePort, startServer, startExample, startCli, startUpstream, waitFor };

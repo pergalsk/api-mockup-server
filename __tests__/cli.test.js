@@ -4,7 +4,7 @@ import nodePath from 'node:path';
 import { describe, it } from 'node:test';
 import { fileURLToPath } from 'node:url';
 
-import { getFreePort, startUpstream, waitFor } from './helpers.js';
+import { BIN_PATH, createFixture, getFreePort, startUpstream, waitFor } from './helpers.js';
 
 const PKG_DIR = nodePath.resolve(nodePath.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -15,12 +15,22 @@ const targetScript = (server) => `
   process.exit(0);
 `;
 
+const exitScript = `
+  import { getProxyTarget } from './lib/cli.js';
+  try {
+    await getProxyTarget({ server: ['http://first', 'http://second'] });
+  } catch (e) {
+    console.log('CODE=' + e.code);
+  }
+`;
+
 function runScript(t, script) {
+  return runNode(t, ['--input-type=module', '-e', script], PKG_DIR);
+}
+
+function runNode(t, args, cwd) {
   const run = { output: '' };
-  const child = spawn(process.execPath, ['--input-type=module', '-e', script], {
-    cwd: PKG_DIR,
-    stdio: 'pipe',
-  });
+  const child = spawn(process.execPath, args, { cwd, stdio: 'pipe' });
   child.stdout.on('data', (chunk) => (run.output += chunk));
   child.stderr.on('data', (chunk) => (run.output += chunk));
   run.exited = new Promise((resolve) => child.on('exit', resolve));
@@ -32,6 +42,19 @@ function runScript(t, script) {
     child.stdin.write('\x1b[B');
     await waitFor(() => run.output.includes(`❯ ${label}`) || run.output.includes(`> ${label}`));
     child.stdin.write('\r');
+  };
+
+  // arrow down to the last choice "Exit" and confirm
+  run.chooseExit = async () => {
+    await waitFor(() => run.output.includes('Exit'));
+    child.stdin.write('\x1b[B'.repeat(5));
+    await waitFor(() => run.output.includes('❯ Exit') || run.output.includes('> Exit'));
+    child.stdin.write('\r');
+  };
+
+  run.pressCtrlC = async () => {
+    await waitFor(() => run.output.includes('Exit'));
+    child.stdin.write('\x03');
   };
 
   return run;
@@ -46,6 +69,36 @@ describe('getProxyTarget', () => {
 
     assert.equal(await run.exited, 0, run.output);
     assert.match(run.output, /TARGET=http:\/\/first/);
+  });
+
+  it('rejects with PROMPT_EXIT when Exit is chosen', async (t) => {
+    const run = runScript(t, exitScript);
+
+    await run.chooseExit();
+
+    assert.equal(await run.exited, 0, run.output);
+    assert.match(run.output, /CODE=PROMPT_EXIT/);
+  });
+
+  it('rejects with PROMPT_EXIT on Ctrl+C', async (t) => {
+    const run = runScript(t, exitScript);
+
+    await run.pressCtrlC();
+
+    assert.equal(await run.exited, 0, run.output);
+    assert.match(run.output, /CODE=PROMPT_EXIT/);
+  });
+
+  it('CLI quits silently when Exit is chosen', async (t) => {
+    const dir = createFixture({
+      'config.json': JSON.stringify({ proxy: { server: ['http://first', 'http://second'] } }),
+    });
+    const run = runNode(t, [BIN_PATH, '-c', 'config.json'], dir);
+
+    await run.chooseExit();
+
+    assert.equal(await run.exited, 0, run.output);
+    assert.doesNotMatch(run.output, /ERROR/);
   });
 
   it('shows labels and returns url of chosen object target', async (t) => {

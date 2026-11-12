@@ -51,6 +51,10 @@ async function main() {
   try {
     server = await apiMockupServer({ ...config, ...flags });
   } catch (e) {
+    // user chose Exit (or Ctrl+C) in the proxy prompt -> quit silently
+    if (e.code === 'PROMPT_EXIT') {
+      return;
+    }
     log.error(NEW_LINE + e.message);
     process.exitCode = 1;
     return;
