@@ -14,7 +14,7 @@
   ],
   "type": "module",
   "engines": {
-    "node": ">=24"
+    "node": ">=24.15"
   },
   "scripts": {
     "lint": "eslint .",
@@ -37,17 +37,17 @@
     "JSON"
   ],
   "dependencies": {
-    "chalk": "^4.1.2",
-    "chokidar": "^3.6.0",
+    "@inquirer/select": "^5.3.0",
+    "chalk": "^6.0.1",
+    "chokidar": "^5.0.0",
     "cors": "^2.8.6",
-    "express": "^4.17.1",
+    "express": "^5.3.0",
     "http-proxy-middleware": "^4.2.1",
-    "inquirer": "^8.2.7",
-    "path-to-regexp": "^6.3.0"
+    "path-to-regexp": "^8.4.2"
   },
   "devDependencies": {
-    "@eslint/js": "^9.39.5",
-    "eslint": "^9.39.5",
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.14.0",
     "eslint-config-prettier": "^10.1.8",
     "globals": "^17.14.0"
   }

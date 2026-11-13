@@ -12,7 +12,7 @@ API Mockup Server may be useful during application development when for example 
 npm install api-mockup-server --save
 ```
 
-Requires Node.js 24+.
+Requires Node.js 24.15+.
 
 The package can be loaded with both `require` and `import`:
 
@@ -108,7 +108,7 @@ More runnable examples are in the [examples](./examples) folder:
 
 In bigger projects you don't want to store all of your routes and responses in one file. You can configure routes in separate file using `routes` param and responses in `database` param providing path to folder containing JSON files with response data.
 
-If you want to mockup only some of rest APIs you can use API Mockup Server as a mockup layer between your running back-end server and frontend application. In this scenario you have to configure proxy server target with running back-end. If you use more than one target, API Mockup Server will ask you to choose one target via CLI interface on server start. The list also includes a `Without proxy` option.
+If you want to mockup only some of rest APIs you can use API Mockup Server as a mockup layer between your running back-end server and frontend application. In this scenario you have to configure proxy server target with running back-end. If you use more than one target, API Mockup Server will ask you to choose one target via CLI interface on server start. The list also includes `Without proxy` and `Exit` options (Ctrl+C also exits).
 
 Note 1: You don't have to restart the server when you make changes in data files or in routes file. API Mockup Server will automatically reflect new configuration while running. Hot reload of routes works only when `routes` is a file path. If `routes` is an inline array, you have to restart the server.
 
@@ -342,7 +342,7 @@ apiMockupServer(serverConfigOptions);
   <tr>
     <td><b>proxy</b><br><small><em>(optional)</em></small></td>
     <td><code>Object</code></td>
-    <td>Proxy server configuration. Undefined or not active routes will be redirected to proxy target. If server is defined as an array, on the start the interactive CLI will ask you to choose from given list of server addresses. The list also includes a <code>Without proxy</code> option.
+    <td>Proxy server configuration. Undefined or not active routes will be redirected to proxy target. If server is defined as an array, on the start the interactive CLI will ask you to choose from given list of server addresses. The list also includes <code>Without proxy</code> and <code>Exit</code> options.
       <br>Target can be a string (URL) or an object with <code>url</code> (required) and <code>title</code> (optional). Strings and objects can be mixed in one array. Target with title is shown as <code>title - url</code> in CLI list and config output. Invalid target (no <code>url</code> or <code>url</code> is not a string) is skipped with a warning.
       <br>Examples: 
 <pre>{ 
@@ -442,11 +442,12 @@ export default [
     <td><b>path</b><br><small><em>(mandatory)</em></small></td>
     <td><code>string</code></td>
     <td>
-      Route path. See more details in <a href="https://expressjs.com/en/4x/api.html#req">ExpressJS 4.x Request documentation</a>.
+      Route path. Syntax of <a href="https://expressjs.com/en/guide/routing.html#route-paths">ExpressJS 5 route paths</a>: optional part in braces <code>{}</code>, named wildcard <code>*name</code>, no regular expressions. Route with invalid path is skipped with a warning.
       <br><br>Examples: 
       <br><code>"/movies/:movieId"</code>
-      <br><code>"/movies/list/:genre?"</code>
+      <br><code>"/movies/list{/:genre}"</code>
       <br><code>"/comments/:year/:month"</code>
+      <br><code>"/files/*filePath"</code>
     </td>
     <td><code>""</code></td>
   </tr>

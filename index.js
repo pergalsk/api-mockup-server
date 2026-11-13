@@ -33,6 +33,9 @@ async function amServer(options = {}) {
   // create express application
   const app = express();
 
+  // keep Express 4 query parsing (nested `?a[b]=1` -> object), Express 5 default is 'simple'
+  app.set('query parser', 'extended');
+
   // cors option can change while the server runs
   const cors = corsMiddleware();
   app.use((req, res, next) => {
@@ -44,6 +47,12 @@ async function amServer(options = {}) {
 
   // use encode URLs middleware
   app.use(express.urlencoded({ extended: true }));
+
+  // keep Express 4 behavior: `body` is `{}` (not `undefined`) when request has no body
+  app.use((req, res, next) => {
+    req.body ??= {};
+    next();
+  });
 
   // load routes file (if used)
   let loadedOptions = await routing.loadRoutes(serverOptions);

@@ -7,14 +7,16 @@ Format is based on [Keep a Changelog](https://keepachangelog.com/), versions fol
 
 ### Breaking changes
 
-- Package is now ES modules (`"type": "module"`). Minimum Node.js version is 24. CommonJS `require()` still works (Node 24 can require ES modules). ([#2](https://github.com/pergalsk/api-mockup-server/issues/2), [#4](https://github.com/pergalsk/api-mockup-server/issues/4))
+- Package is now ES modules (`"type": "module"`). Minimum Node.js version is 24.15. CommonJS `require()` still works (Node 24 can require ES modules). Node 24.15 is needed by the `@inquirer/select` prompt ([#70](https://github.com/pergalsk/api-mockup-server/issues/70)). ([#2](https://github.com/pergalsk/api-mockup-server/issues/2), [#4](https://github.com/pergalsk/api-mockup-server/issues/4))
 - `apiMockupServer()` now returns a Promise with a server handle `{ port, url, close() }`. ([#46](https://github.com/pergalsk/api-mockup-server/issues/46))
 - Library code no longer calls `process.exit`. Port in use at start rejects the Promise (`EADDRINUSE`). Only the CLI exits. ([#46](https://github.com/pergalsk/api-mockup-server/issues/46))
 - Route with an invalid `status` (not a number 100-999) logs a warning and is not registered. Before, it crashed on each request. ([#59](https://github.com/pergalsk/api-mockup-server/issues/59))
 - Proxy log line now shows the full target URL and status, e.g. `GET /api/x -> http://host/api/x [200]`. ([#16](https://github.com/pergalsk/api-mockup-server/issues/16))
+- Express 5: route `path` uses Express 5 syntax. Optional part is `{/:id}` (was `:id?`), wildcard must be named `*name` (value is an array), regular expressions like `(.*)` or `:id(\d+)` are not supported. Route with an invalid path logs a warning and is not registered (and is not mocked by proxy). Callback `req` is an Express 5 request (e.g. `req.param()` is removed). `body` and nested `query` in callbacks work as before. ([#70](https://github.com/pergalsk/api-mockup-server/issues/70))
 
 ### Added
 
+- Proxy target prompt has an `Exit` option. Exit or Ctrl+C quits the CLI quietly; library `apiMockupServer()` rejects with error code `PROMPT_EXIT`. ([#70](https://github.com/pergalsk/api-mockup-server/issues/70))
 - Command line tool `api-mockup-server` with options for config file, port, routes, database, prefix and proxy. JS/JSON config file with hot reload. Priority: flag > config > default. ([#42](https://github.com/pergalsk/api-mockup-server/issues/42))
 - Server handle for tests: `port: 0` (random free port), `close()` stops server, watchers and shortcuts. New options `interactive` and `silent`. README section "Use in tests". ([#46](https://github.com/pergalsk/api-mockup-server/issues/46))
 - Route options `headers`, `contentType` and `file`; global `headers` server option (route wins). Status 204/304 sends no body. ([#45](https://github.com/pergalsk/api-mockup-server/issues/45))

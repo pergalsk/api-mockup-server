@@ -26,11 +26,13 @@ npm start
 - POST http://localhost:9933/posts - mocked, status 200, request body with `id: 101`
 - PUT http://localhost:9933/posts/1 - mocked, status 500 with error message
 
+`-i` shows response status and headers before the body. `X-Api-Mockup-Server` header tells if the response is `mocked...` or from `proxy`.
+
 ```
-curl http://localhost:9933/users/1
-curl http://localhost:9933/users/2
-curl http://localhost:9933/posts/1
-curl http://localhost:9933/todos/1
-curl -X POST -H "Content-Type: application/json" -d '{"title":"Hello","userId":1}' http://localhost:9933/posts
-curl -X PUT http://localhost:9933/posts/1
+curl -i http://localhost:9933/users/1
+curl -i http://localhost:9933/users/2
+curl -i http://localhost:9933/posts/1
+curl -i http://localhost:9933/todos/1
+curl -i -X POST -H "Content-Type: application/json" -d '{"title":"Hello","userId":1}' http://localhost:9933/posts
+curl -i -X PUT http://localhost:9933/posts/1
 ```
