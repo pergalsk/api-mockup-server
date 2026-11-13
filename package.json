@@ -19,7 +19,7 @@
   "scripts": {
     "lint": "eslint .",
     "test": "node --test",
-    "prepublishOnly": "npm run lint && npm test"
+    "prepublishOnly": "node scripts/prepublish-check.js && npm run lint && npm test"
   },
   "author": "Peter Gál",
   "license": "MIT",
