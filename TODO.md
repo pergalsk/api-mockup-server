@@ -9,7 +9,6 @@ Done work is listed in [CHANGELOG.md](CHANGELOG.md).
 
 **Fix**
 
-- flaky test: 'listens on the new port' (ECONNREFUSED, probably free port race between test files)
 - replace deprecated Node.js `querystring` (lib/proxy.js)
 
 **Features**
