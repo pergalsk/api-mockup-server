@@ -22,6 +22,7 @@ function runCli(args, files = {}) {
     cwd,
     encoding: 'utf8',
     timeout: 10000,
+    env: { ...process.env, FORCE_COLOR: '0' },
   });
   nodeFs.rmSync(cwd, { recursive: true, force: true });
   return { status, output: stdout + stderr };

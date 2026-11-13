@@ -116,7 +116,8 @@ async function runServer({ dir, port, scriptName, args = [], env = {} }) {
   const child = spawn(process.execPath, [scriptName, ...args], {
     cwd: dir,
     stdio: 'pipe',
-    env: { ...process.env, ...env },
+    // no colors (`node --test` sets FORCE_COLOR in a terminal, color codes break output checks)
+    env: { ...process.env, FORCE_COLOR: '0', ...env },
   });
   child.stdout.on('data', (chunk) => (output += chunk));
   child.stderr.on('data', (chunk) => (output += chunk));
