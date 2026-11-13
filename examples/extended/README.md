@@ -28,13 +28,15 @@ npm start
 - PUT http://localhost:9933/api/v1/books/10 - status 400 with validation errors from `db/BOOK_DETAIL.400.json`
 - DELETE http://localhost:9933/api/v1/books/10 - status 200, `{ deleted: true, id: 10 }`
 
+`-i` shows response status and headers (e.g. `X-Api-Mockup-Server: mocked,file,dynamic`) before the body.
+
 ```
-curl http://localhost:9933/api/v1/books/all
-curl "http://localhost:9933/api/v1/books/search?genre=Romance"
-curl http://localhost:9933/api/v2/books/7
-curl -X POST -H "Content-Type: application/json" -d '{"title":"Ivanhoe","authorId":8}' http://localhost:9933/api/v1/books
-curl -X PUT http://localhost:9933/api/v1/books/10
-curl -X DELETE http://localhost:9933/api/v1/books/10
+curl -i http://localhost:9933/api/v1/books/all
+curl -i "http://localhost:9933/api/v1/books/search?genre=Romance"
+curl -i http://localhost:9933/api/v2/books/7
+curl -i -X POST -H "Content-Type: application/json" -d '{"title":"Ivanhoe","authorId":8}' http://localhost:9933/api/v1/books
+curl -i -X PUT http://localhost:9933/api/v1/books/10
+curl -i -X DELETE http://localhost:9933/api/v1/books/10
 ```
 
 ## Hot reload
