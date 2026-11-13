@@ -30,7 +30,11 @@ function runScript(t, script) {
 
 function runNode(t, args, cwd) {
   const run = { output: '' };
-  const child = spawn(process.execPath, args, { cwd, stdio: 'pipe' });
+  const child = spawn(process.execPath, args, {
+    cwd,
+    stdio: 'pipe',
+    env: { ...process.env, FORCE_COLOR: '0' },
+  });
   child.stdout.on('data', (chunk) => (run.output += chunk));
   child.stderr.on('data', (chunk) => (run.output += chunk));
   run.exited = new Promise((resolve) => child.on('exit', resolve));
