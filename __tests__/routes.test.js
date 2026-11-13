@@ -74,4 +74,57 @@ describe('inline routes', () => {
     assert.deepEqual(await res.json(), { title: 'Book', id: '7', q: 'x' });
     assert.match(res.headers.get('x-api-mockup-server'), /dynamic/);
   });
+
+  it('gives callback empty body and nested query (Express 4 behavior)', async (t) => {
+    const server = await startServer({
+      options: `{
+        routes: [{
+          active: true,
+          path: '/search',
+          data: {},
+          callback: ({ query, body }) => ({ query, body }),
+        }],
+      }`,
+    });
+    t.after(() => server.stop());
+
+    const res = await server.fetch('/search?filter[genre]=novel');
+    assert.deepEqual(await res.json(), { query: { filter: { genre: 'novel' } }, body: {} });
+  });
+});
+
+describe('route paths', () => {
+  it('supports Express 5 optional parts and wildcards', async (t) => {
+    const server = await startServer({
+      options: `{
+        routes: [
+          { active: true, path: '/movies{/:genre}', data: {}, callback: ({ params }) => params },
+          { active: true, path: '/files/*filePath', data: {}, callback: ({ params }) => params },
+        ],
+      }`,
+    });
+    t.after(() => server.stop());
+
+    assert.deepEqual(await (await server.fetch('/movies')).json(), {});
+    assert.deepEqual(await (await server.fetch('/movies/drama')).json(), { genre: 'drama' });
+    assert.deepEqual(await (await server.fetch('/files/a/b.txt')).json(), { filePath: ['a', 'b.txt'] });
+  });
+
+  it('skips route with invalid path and keeps other routes', async (t) => {
+    const server = await startServer({
+      options: `{
+        routes: [
+          { active: true, path: '/old/:id?', data: { old: true } },
+          { active: true, path: '/all(.*)', data: { all: true } },
+          { active: true, path: '/ok', data: { ok: true } },
+        ],
+      }`,
+    });
+    t.after(() => server.stop());
+
+    assert.match(server.output(), /Invalid route path "\/old\/:id\?"/);
+    assert.match(server.output(), /Invalid route path "\/all\(\.\*\)"/);
+    assert.equal((await server.fetch('/old/1')).status, 404);
+    assert.deepEqual(await (await server.fetch('/ok')).json(), { ok: true });
+  });
 });

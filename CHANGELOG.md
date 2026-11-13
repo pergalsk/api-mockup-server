@@ -12,6 +12,7 @@ Format is based on [Keep a Changelog](https://keepachangelog.com/), versions fol
 - Library code no longer calls `process.exit`. Port in use at start rejects the Promise (`EADDRINUSE`). Only the CLI exits. ([#46](https://github.com/pergalsk/api-mockup-server/issues/46))
 - Route with an invalid `status` (not a number 100-999) logs a warning and is not registered. Before, it crashed on each request. ([#59](https://github.com/pergalsk/api-mockup-server/issues/59))
 - Proxy log line now shows the full target URL and status, e.g. `GET /api/x -> http://host/api/x [200]`. ([#16](https://github.com/pergalsk/api-mockup-server/issues/16))
+- Express 5: route `path` uses Express 5 syntax. Optional part is `{/:id}` (was `:id?`), wildcard must be named `*name` (value is an array), regular expressions like `(.*)` or `:id(\d+)` are not supported. Route with an invalid path logs a warning and is not registered (and is not mocked by proxy). Callback `req` is an Express 5 request (e.g. `req.param()` is removed). `body` and nested `query` in callbacks work as before. ([#70](https://github.com/pergalsk/api-mockup-server/issues/70))
 
 ### Added
 

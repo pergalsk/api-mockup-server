@@ -31,6 +31,21 @@ describe('proxy', () => {
     assert.equal(proxied.headers.get('x-api-mockup-server'), 'proxy');
   });
 
+  it('skips route with invalid path and proxies its requests', async (t) => {
+    const { server } = await startWithProxy(
+      t,
+      `[
+        { active: true, path: '/old/:id?', data: { old: true } },
+        { active: true, path: '/mocked', data: { mocked: true } },
+      ]`
+    );
+
+    assert.match(server.output(), /Invalid route path "\/api\/old\/:id\?"/);
+    const proxied = await server.fetch('/api/old/1');
+    assert.deepEqual(await proxied.json(), { from: 'upstream', method: 'GET', url: '/api/old/1' });
+    assert.deepEqual(await (await server.fetch('/api/mocked')).json(), { mocked: true });
+  });
+
   it('mocks only when applyIf returns true, otherwise proxies', async (t) => {
     const { server } = await startWithProxy(
       t,

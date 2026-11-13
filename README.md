@@ -442,11 +442,12 @@ export default [
     <td><b>path</b><br><small><em>(mandatory)</em></small></td>
     <td><code>string</code></td>
     <td>
-      Route path. See more details in <a href="https://expressjs.com/en/4x/api.html#req">ExpressJS 4.x Request documentation</a>.
+      Route path. Syntax of <a href="https://expressjs.com/en/guide/routing.html#route-paths">ExpressJS 5 route paths</a>: optional part in braces <code>{}</code>, named wildcard <code>*name</code>, no regular expressions. Route with invalid path is skipped with a warning.
       <br><br>Examples: 
       <br><code>"/movies/:movieId"</code>
-      <br><code>"/movies/list/:genre?"</code>
+      <br><code>"/movies/list{/:genre}"</code>
       <br><code>"/comments/:year/:month"</code>
+      <br><code>"/files/*filePath"</code>
     </td>
     <td><code>""</code></td>
   </tr>
