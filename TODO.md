@@ -3,10 +3,6 @@
 Open work is tracked in [GitHub issues](https://github.com/pergalsk/api-mockup-server/issues).
 Done work is listed in [CHANGELOG.md](CHANGELOG.md).
 
-**Fix**
-
-- replace deprecated Node.js `querystring` (lib/proxy.js)
-
 **Features**
 
 - generate TypeScript types from JSDoc (#47)

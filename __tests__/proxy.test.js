@@ -129,6 +129,14 @@ describe('proxy', () => {
       body: 'a=1&b=two',
     });
     assert.equal(upstream.bodies.at(-1), 'a=1&b=two');
+
+    // list values stay repeated keys
+    await server.fetch('/api/items/3', {
+      method: 'PUT',
+      headers: { 'content-type': 'application/x-www-form-urlencoded' },
+      body: 'a=1&a=2',
+    });
+    assert.equal(upstream.bodies.at(-1), 'a=1&a=2');
   });
 
   it('passes POST body to interceptor callback', async (t) => {
