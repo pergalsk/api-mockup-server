@@ -216,24 +216,39 @@ describe('command-line: config hot reload', () => {
   });
 
   it('listens on the new port', async (t) => {
-    const port = await getFreePort();
-    const newPort = await getFreePort();
-    const server = await startCli({
-      port,
-      args: ['-c', 'config.json'],
-      files: {
-        'config.json': jsonConfig({ port, routes: 'routes.cjs' }),
-        'routes.cjs': routesFile({ v: 1 }),
-      },
-    });
-    t.after(() => server.stop());
+    let server;
+    let newPort;
+    // another test file can take the new port before the server uses it
+    // (server then stops with "port in use"), so try again with another port
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      const port = await getFreePort();
+      server = await startCli({
+        port,
+        args: ['-c', 'config.json'],
+        files: {
+          'config.json': jsonConfig({ port, routes: 'routes.cjs' }),
+          'routes.cjs': routesFile({ v: 1 }),
+        },
+      });
+      t.after(server.stop);
 
-    server.writeFile('config.json', jsonConfig({ port: newPort, routes: 'routes.cjs' }));
+      newPort = await getFreePort();
+      server.writeFile('config.json', jsonConfig({ port: newPort, routes: 'routes.cjs' }));
 
-    const res = await waitFor(() => fetch(`http://localhost:${newPort}/v`));
+      // stop waiting at once when the server process exits
+      await waitFor(
+        () => !server.isRunning() || server.output().includes(`Server port:   ${newPort}`),
+      );
+      if (server.isRunning()) {
+        break;
+      }
+    }
+    assert.ok(server.isRunning(), `server stopped:\n${server.output()}`);
+
+    // new server config is logged only when the new server listens
+    const res = await fetch(`http://localhost:${newPort}/v`);
     assert.deepEqual(await res.json(), { v: 1 });
     await assert.rejects(() => server.fetch('/v'));
-    await waitFor(() => server.output().includes(`Server port:   ${newPort}`));
   });
 
   it('logs new server config only when the new server listens', async (t) => {
