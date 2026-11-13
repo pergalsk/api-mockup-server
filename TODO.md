@@ -3,10 +3,6 @@
 Open work is tracked in [GitHub issues](https://github.com/pergalsk/api-mockup-server/issues).
 Done work is listed in [CHANGELOG.md](CHANGELOG.md).
 
-**Release**
-
-- release 5.0.0 to npm (#5)
-
 **Fix**
 
 - replace deprecated Node.js `querystring` (lib/proxy.js)
