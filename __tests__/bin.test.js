@@ -268,9 +268,11 @@ describe('command-line: config hot reload', () => {
 
     // check output often, so the request is sent right after the log line
     const end = Date.now() + 10000;
-    while (server.output().match(/Proxy target:/g).length < 2 && Date.now() < end) {
+    const logged = () => server.output().match(/Proxy target:/g).length === 2;
+    while (!logged() && Date.now() < end) {
       await new Promise((resolve) => setImmediate(resolve));
     }
+    assert.ok(logged(), `new server config was not logged:\n${server.output()}`);
     // single request, no retry
     assert.deepEqual(await getJson(server, '/two/v'), { v: 1 });
   });

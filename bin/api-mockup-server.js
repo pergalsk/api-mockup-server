@@ -45,22 +45,15 @@ async function main() {
     }
   }
 
-  // priority: CLI flag > config file > defaults (defaults are added by apiMockupServer)
   let server;
+  let closeConfigWatcher = () => {};
 
-  try {
-    server = await apiMockupServer({ ...config, ...flags });
-  } catch (e) {
-    log.error(NEW_LINE + e.message);
-    process.exitCode = 1;
-    return;
-  }
-
-  // server closed by quit shortcut or after an error (e.g. new port in use) -> end the CLI
-  server.closed.then((error) => process.exit(error ? 1 : 0));
-
+  // watch config before the server starts listening, so a change right after start is not missed
   if (configPath) {
     const reloadConfig = debounce(async () => {
+      if (!server) {
+        return; // server is not started yet
+      }
       try {
         server.reconfigure({ ...(await loadConfig(configPath)), ...flags });
       } catch (e) {
@@ -68,8 +61,21 @@ async function main() {
       }
     }, RESTART_DEBOUNCE);
 
-    await watcher.watchConfig(configPath, reloadConfig);
+    closeConfigWatcher = await watcher.watchConfig(configPath, reloadConfig);
   }
+
+  // priority: CLI flag > config file > defaults (defaults are added by apiMockupServer)
+  try {
+    server = await apiMockupServer({ ...config, ...flags });
+  } catch (e) {
+    log.error(NEW_LINE + e.message);
+    process.exitCode = 1;
+    await closeConfigWatcher();
+    return;
+  }
+
+  // server closed by quit shortcut or after an error (e.g. new port in use) -> end the CLI
+  server.closed.then((error) => process.exit(error ? 1 : 0));
 }
 
 main();
