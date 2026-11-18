@@ -3,7 +3,23 @@
 All notable changes to this project are listed here.
 Format is based on [Keep a Changelog](https://keepachangelog.com/), versions follow [Semantic Versioning](https://semver.org/).
 
-## [5.0.0] - Unreleased
+## [5.0.1] - 2026-11-18
+
+### Fixed
+
+- Exit or Ctrl+C in the proxy target prompt no longer crashes with a stack trace when the package is used from a script. The process now ends quietly (exit code 0); `apiMockupServer()` no longer rejects with `PROMPT_EXIT`. ([#80](https://github.com/pergalsk/api-mockup-server/issues/80))
+- CLI watches the config file before the server starts, so a config change right after start is no longer missed. ([#82](https://github.com/pergalsk/api-mockup-server/issues/82))
+
+### Added
+
+- Message "API Mockup Server stopped by user." on Exit in the proxy prompt and on the `q` shortcut. ([#80](https://github.com/pergalsk/api-mockup-server/issues/80))
+
+### Changed
+
+- Proxy re-sends form (urlencoded) bodies with `URLSearchParams` instead of legacy `querystring`. ([#78](https://github.com/pergalsk/api-mockup-server/issues/78))
+- Checks before `npm publish` (clean git, `main` branch, version not published yet); tests no longer fail in a color terminal; flaky hot reload tests fixed. ([#72](https://github.com/pergalsk/api-mockup-server/issues/72), [#74](https://github.com/pergalsk/api-mockup-server/issues/74), [#76](https://github.com/pergalsk/api-mockup-server/issues/76))
+
+## [5.0.0] - 2026-11-13
 
 ### Breaking changes
 
@@ -199,7 +215,8 @@ Format is based on [Keep a Changelog](https://keepachangelog.com/), versions fol
 - Watching of routes file and database folder.
 - Colored log service, better options and warnings.
 
-[5.0.0]: https://github.com/pergalsk/api-mockup-server/compare/v4.1.0...main
+[5.0.1]: https://github.com/pergalsk/api-mockup-server/compare/v5.0.0...v5.0.1
+[5.0.0]: https://github.com/pergalsk/api-mockup-server/compare/v4.1.0...v5.0.0
 [4.1.0]: https://github.com/pergalsk/api-mockup-server/compare/v4.0.0...v4.1.0
 [4.0.0]: https://github.com/pergalsk/api-mockup-server/compare/v3.2.0...v4.0.0
 [3.2.0]: https://github.com/pergalsk/api-mockup-server/compare/v3.1.2...v3.2.0
