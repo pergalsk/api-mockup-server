@@ -27,7 +27,17 @@ async function amServer(options = {}) {
   log.appStart();
 
   // get proxy target from user selection (state is reset, previous server could change it)
-  const target = await cli.getProxyTarget(serverOptions.proxy, serverOptions.interactive !== false);
+  let target;
+  try {
+    target = await cli.getProxyTarget(serverOptions.proxy, serverOptions.interactive !== false);
+  } catch (e) {
+    // user chose Exit (or Ctrl+C) in the proxy prompt -> quit quietly, it is not an error
+    if (e.code === 'PROMPT_EXIT') {
+      log.serverStoppedByUser();
+      process.exit(0);
+    }
+    throw e;
+  }
   setState({ target, suspended: null, isRestart: false });
 
   // create express application

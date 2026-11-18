@@ -678,7 +678,7 @@ Note: Interceptors work only for responses with `application/json` content type.
 - `url` - e.g. `http://localhost:51234`
 - `close()` - stops the server, file watchers and keyboard shortcuts, returns a Promise
 
-`port` and `url` stay the same after hot reload restart. If the port is already in use, the Promise rejects with an error (`code: 'EADDRINUSE'`), it does not end the process.
+`port` and `url` stay the same after hot reload restart. If the port is already in use, the Promise rejects with an error (`code: 'EADDRINUSE'`), it does not end the process. When the user chooses `Exit` (or presses Ctrl+C) in the proxy target prompt, the process ends quietly (exit code 0).
 
 Example with `node:test` (works the same in Vitest, Jest or Playwright):
 

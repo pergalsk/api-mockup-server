@@ -103,7 +103,27 @@ describe('getProxyTarget', () => {
 
     assert.equal(await run.exited, 0, run.output);
     assert.doesNotMatch(run.output, /ERROR/);
+    assert.match(run.output, /API Mockup Server stopped by user./);
   });
+
+  for (const [name, press] of [
+    ['Exit is chosen', (run) => run.chooseExit()],
+    ['Ctrl+C is pressed', (run) => run.pressCtrlC()],
+  ]) {
+    it(`script with the package quits quietly when ${name}`, async (t) => {
+      const run = runScript(
+        t,
+        `import amServer from './index.js';
+        await amServer({ port: 0, proxy: { server: ['http://first', 'http://second'] } });`
+      );
+
+      await press(run);
+
+      assert.equal(await run.exited, 0, run.output);
+      assert.doesNotMatch(run.output, /Error|PROMPT_EXIT/);
+      assert.match(run.output, /API Mockup Server stopped by user./);
+    });
+  }
 
   it('shows labels and returns url of chosen object target', async (t) => {
     const run = runScript(
